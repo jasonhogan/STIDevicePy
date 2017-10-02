@@ -2,14 +2,14 @@
 
 orb = STIPy.ORBManagerPy()
 
-class SimpleDevice(STIPy.STI_Device_AdapterPub):
+class SimpleDevice(STIPy.STI_Device):
     def __init__(self, orb, name, ip, module):
-        STIPy.STI_Device_AdapterPub.__init__(self, orb, name, ip, module)
+        STIPy.STI_Device.__init__(self, orb, name, ip, module)
         return
 
-class TestDevice(STIPy.STI_Device_AdapterPub):
+class TestDevice(STIPy.STI_Device):
     def __init__(self, orb, name, ip, module):
-        STIPy.STI_Device_AdapterPub.__init__(self, orb, name, ip, module)
+        STIPy.STI_Device.__init__(self, orb, name, ip, module)
         return
         
     def defineChannels(self):
