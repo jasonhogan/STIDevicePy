@@ -7,7 +7,7 @@
 #include <ORBManager.h>
 #include <Attribute.h>
 
-
+#include <iostream>
 
 
 //class ORBManagerPy : public ORBManager
@@ -227,9 +227,14 @@ public:
 		: STI_Device_Adapter(orb.orb_manager, DeviceName, IPAddress, ModuleNumber) {}
 	virtual ~STI_Device_AdapterPub() {}
 public:
-	virtual void defineChannels() { return STI_Device_Adapter::defineChannels(); }
-//	void addOutputChannel(unsigned short Channel, TValue OutputType, std::string defaultName = "");
-
+	virtual void defineChannels() { std::cout << ".......1......." << std::endl; } //{ return STI_Device_Adapter::defineChannels(); }
+	
+//	using STI_Device_Adapter::addOutputChannel;
+	void addOutputChannel(unsigned short Channel, TValue OutputType, std::string defaultName)
+	{
+		STI_Device_Adapter::addOutputChannel(Channel, OutputType, defaultName);
+	}
+	
 };
 
 class STI_Device_AdapterWrap : public STI_Device_AdapterPub, public boost::python::wrapper<STI_Device_AdapterPub>
@@ -238,16 +243,17 @@ public:
 	STI_Device_AdapterWrap(ORBManagerPy& orb, std::string DeviceName, std::string IPAddress, unsigned short ModuleNumber)
 		: STI_Device_AdapterPub(orb, DeviceName, IPAddress, ModuleNumber) {}
 
-	void defineChannels()
+	virtual void defineChannels()
 	{
 		if (boost::python::override defineChannels = this->get_override("defineChannels"))
 		{
+			std::cout << "......2........" << std::endl;
 			defineChannels(); // *note*
 			return;
 		}
 		return STI_Device_AdapterPub::defineChannels();
 	}
-	void default_defineChannels() { return this->STI_Device_AdapterPub::defineChannels(); }
+	void default_defineChannels() { std::cout << ".......3......." << std::endl; this->STI_Device_AdapterPub::defineChannels(); }
 };
 
 //class STI_DeviceWrap : public STI_Device_Adapter, public boost::python::wrapper<STI_Device_Adapter>
@@ -375,8 +381,9 @@ BOOST_PYTHON_MODULE(STIPy)
 
 	class_<STI_Device_AdapterWrap, boost::noncopyable>("STI_Device_AdapterPub", init<ORBManagerPy&, std::string, std::string, unsigned short>())
 		.def("defineChannels", &STI_Device_AdapterPub::defineChannels, &STI_Device_AdapterWrap::default_defineChannels)
+		.def("addOutputChannel", &STI_Device_AdapterPub::addOutputChannel)
 		;
-
+	
 	enum_<TValue>("TValue")
 		.value("ValueNumber", ValueNumber)
 		.value("ValueString", ValueString)
