@@ -17,10 +17,14 @@ class TestDevice(STIPy.STI_Device_AdapterPub):
         self.addOutputChannel(0,STIPy.TValue.ValueNumber,"out")
         self.addOutputChannel(1,STIPy.TValue.ValueString,"out2")
         return
+        
+    def execute(self, args):
+        print ("execute....................." + str(args[1]))
+        return "exe!"
 
 ##########
 
-simpDev = SimpleDevice(orb,"Simple", "localhost", 0)
+#simpDev = SimpleDevice(orb,"Simple", "localhost", 0)
 dev = TestDevice(orb, "Test Device", "localhost", 256)
 
 print(STIPy.TValue.ValueNumber.name)

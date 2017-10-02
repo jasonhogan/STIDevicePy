@@ -227,8 +227,11 @@ public:
 		: STI_Device_Adapter(orb.orb_manager, DeviceName, IPAddress, ModuleNumber) {}
 	virtual ~STI_Device_AdapterPub() {}
 public:
+	//STI calls this function if there is no python override:
 	virtual void defineChannels() { std::cout << ".......1......." << std::endl; } //{ return STI_Device_Adapter::defineChannels(); }
 	
+	virtual std::string execute(int argc, char* argv[]) { return ""; };
+
 //	using STI_Device_Adapter::addOutputChannel;
 	void addOutputChannel(unsigned short Channel, TValue OutputType, std::string defaultName)
 	{
@@ -245,54 +248,41 @@ public:
 
 	virtual void defineChannels()
 	{
+		//STI library calls this if there is a python override
 		if (boost::python::override defineChannels = this->get_override("defineChannels"))
 		{
 			std::cout << "......2........" << std::endl;
-			defineChannels(); // *note*
+			defineChannels(); // *note* // call python function
 			return;
 		}
 		return STI_Device_AdapterPub::defineChannels();
 	}
 	void default_defineChannels() { std::cout << ".......3......." << std::endl; this->STI_Device_AdapterPub::defineChannels(); }
-};
 
-//class STI_DeviceWrap : public STI_Device_Adapter, public boost::python::wrapper<STI_Device_Adapter>
-//{
-//public:
-//	STI_DeviceWrap(ORBManagerPy& orb, std::string DeviceName,	//ORBManager* orb_manager
-//		std::string IPAddress, unsigned short ModuleNumber)
-//		: STI_Device_Adapter(orb.orb_manager, DeviceName, IPAddress, ModuleNumber) {};
-//
-//public:
-//	// Device main()
-//	virtual bool deviceMain(int argc, char* argv[]) { 
-//		return this->get_override("deviceMain")(argc, argv); };
-//
-//	// Device Attributes
-//	virtual void defineAttributes() { this->get_override("defineAttributes")(); };
-//	virtual void refreshAttributes() { this->get_override("refreshAttributes")(); };
-//	virtual bool updateAttribute(std::string key, std::string value) { return this->get_override("updateAttribute")(key, value); };
-//
-//	// Device Channels
-//	virtual void defineChannels() { this->get_override("defineChannels")(); };
-//	virtual bool readChannel(unsigned short channel, const MixedValue& valueIn, MixedData& dataOut) { return this->get_override("readChannel")(channel, valueIn, dataOut); };
-//	virtual bool writeChannel(unsigned short channel, const MixedValue& value) { return this->get_override("writeChannel")(channel, value); };
-//
-//	// Device Command line interface setup
-//	virtual void definePartnerDevices() { this->get_override("definePartnerDevices")(); };
-//	virtual std::string execute(int argc, char* argv[]) { return this->get_override("execute")(argc, argv); };
-//
-//	// Device-specific event parsing
-//	virtual void parseDeviceEvents(const RawEventMap& eventsIn,
-//		SynchronousEventVector& eventsOut) throw(std::exception) {
-//		this->get_override("parseDeviceEvents")(eventsIn, eventsOut);
-//	};
-//
-//	// Event Playback control
-//	virtual void stopEventPlayback() { this->get_override("stopEventPlayback")(); };
-//	virtual void pauseEventPlayback() { this->get_override("pauseEventPlayback")(); };
-//	virtual void resumeEventPlayback() { this->get_override("resumeEventPlayback")(); };
-//};
+	virtual std::string execute(int argc, char* argv[])
+	{
+		//STI library calls this if there is a python override
+		if (boost::python::override execute = this->get_override("execute"))
+		{
+			std::vector<std::string> args;
+			STI::Utils::convertArgs(argc, argv, args);
+
+			boost::python::list result;
+			// put all the strings inside the python list
+			vector<string>::iterator it;
+			for (it = args.begin(); it != args.end(); ++it) {
+				result.append(*it);
+			}
+
+			std::cout << "......2........" << std::endl;
+			return execute(result); // *note* // call python function
+		}
+		return STI_Device_AdapterPub::execute(argc, argv);
+	}
+	virtual std::string default_execute(int argc, char* argv[]) { std::cout << ".......3......." << std::endl; return this->STI_Device_AdapterPub::execute(argc, argv); }
+
+
+};
 
 BOOST_PYTHON_MODULE(STIPy)
 {
@@ -381,6 +371,7 @@ BOOST_PYTHON_MODULE(STIPy)
 
 	class_<STI_Device_AdapterWrap, boost::noncopyable>("STI_Device_AdapterPub", init<ORBManagerPy&, std::string, std::string, unsigned short>())
 		.def("defineChannels", &STI_Device_AdapterPub::defineChannels, &STI_Device_AdapterWrap::default_defineChannels)
+		.def("execute", &STI_Device_AdapterPub::execute, &STI_Device_AdapterWrap::default_execute)
 		.def("addOutputChannel", &STI_Device_AdapterPub::addOutputChannel)
 		;
 	
