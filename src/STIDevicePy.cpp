@@ -1,5 +1,5 @@
 
-#define BOOST_PYTHON_STATIC_LIB
+//#define BOOST_PYTHON_STATIC_LIB
 #include <boost/python.hpp>
 //using namespace boost::python;
 
@@ -9,12 +9,17 @@
 
 #include <Attribute.h>
 
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(addOutputChannel_member_overloads, addOutputChannel, 2, 3)
+//BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(addInputChannel_1_member_overloads, addInputChannel_1, 2, 3)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(addInputChannel_3_member_overloads, addInputChannel_3, 3, 4)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(addAttribute_member_overloads, addAttribute, 2, 3)
+
 
 BOOST_PYTHON_MODULE(STIPy)
 {
 	using namespace boost::python;
 
-	class_<ORBManagerPy>("ORBManagerPy")
+	class_<ORBManagerPy>("ORBManager")
 		.def("run", &ORBManagerPy::run)
 		.def("ORBshutdown", &ORBManagerPy::ORBshutdown)
 		;
@@ -26,20 +31,78 @@ BOOST_PYTHON_MODULE(STIPy)
 
 	////////////////////////////////////////////////////////////
 
-	class_<STI_Device_Adapter_Wrapper, boost::noncopyable>("STI_Device",
-		init<ORBManagerPy&, std::string, std::string, unsigned short>())
+	class_<STI_Device_Adapter_Wrapper, boost::noncopyable>("STI_Device", "STI device base class.",
+		init<ORBManagerPy&, std::string, std::string, unsigned short>(args("Orb", "Device Name", "IP Address", "Module"), "__init__ docstring"))
+		
+		.def("defineAttributes", &STI_Device_Adapter_Pub::defineAttributes, &STI_Device_Adapter_Wrapper::default_defineAttributes)
+		.def("refreshAttributes", &STI_Device_Adapter_Pub::refreshAttributes, &STI_Device_Adapter_Wrapper::default_refreshAttributes)
+		.def("updateAttribute", &STI_Device_Adapter_Pub::updateAttribute, &STI_Device_Adapter_Wrapper::default_updateAttribute)
 		
 		.def("defineChannels", &STI_Device_Adapter_Pub::defineChannels, &STI_Device_Adapter_Wrapper::default_defineChannels)
+		.def("writeChannel", &STI_Device_Adapter_Pub::writeChannel_py, &STI_Device_Adapter_Wrapper::default_writeChannel_py)
+
+		.def("definePartnerDevices", &STI_Device_Adapter_Pub::definePartnerDevices, &STI_Device_Adapter_Wrapper::default_definePartnerDevices)
+
 		.def("execute", &STI_Device_Adapter_Pub::execute, &STI_Device_Adapter_Wrapper::default_execute)
-		.def("addOutputChannel", &STI_Device_Adapter_Pub::addOutputChannel)
+
+		.def("stopEventPlayback", &STI_Device_Adapter_Pub::stopEventPlayback, &STI_Device_Adapter_Wrapper::default_stopEventPlayback)
+		.def("pauseEventPlayback", &STI_Device_Adapter_Pub::pauseEventPlayback, &STI_Device_Adapter_Wrapper::default_pauseEventPlayback)
+		.def("resumeEventPlayback", &STI_Device_Adapter_Pub::resumeEventPlayback, &STI_Device_Adapter_Wrapper::default_resumeEventPlayback)
+
+		.def("addOutputChannel", &STI_Device_Adapter_Pub::addOutputChannel, 
+			addOutputChannel_member_overloads(
+			args("self", "channel", "type", "name"), 
+				"addOutputChannel's docstring"
+				)
+			)
+		.def("addInputChannel", &STI_Device_Adapter_Pub::addInputChannel_1,
+			args("self", "channel", "inputType"),
+			"addInputChannel docstring"
+			)
+		.def("addInputChannel", &STI_Device_Adapter_Pub::addInputChannel_2,
+			args("self", "channel", "inputType", "name"),
+			"addInputChannel docstring"
+			)
+		.def("addInputChannel", &STI_Device_Adapter_Pub::addInputChannel_3,
+			addInputChannel_3_member_overloads(
+				args("self", "channel", "inputType", "outputType", "name"),
+				"addInputChannel's docstring"
+				)
+			)
+		.def("addAttribute", &STI_Device_Adapter_Pub::addAttribute,
+			addAttribute_member_overloads(
+				boost::python::args("self", "key", "initialValue", "allowedValues"),
+				"addAttribute's docstring"
+				)
+			)
+		.def("setAttribute", &STI_Device_Adapter_Pub::setAttribute, 
+			boost::python::args("self", "key", "value"), 
+			"setAttribute docstring"
+			)
+		.def("addPartnerDevice", &STI_Device_Adapter_Pub::addPartnerDevice,
+			boost::python::args("self", "partnerAlias", "deviceIP", "devicemodule", "deviceName"),
+			"addPartnerDevice docstring"
+			)
 		;
 	
+
 	enum_<TValue>("TValue")
 		.value("ValueNumber", ValueNumber)
 		.value("ValueString", ValueString)
 		.value("ValueVector", ValueVector)
 		.value("ValueNone", ValueNone)
 		;
+
+	enum_<TData>("TData")
+		.value("DataBoolean", DataBoolean)
+		.value("DataOctet", DataOctet)
+		.value("DataLong", DataLong)
+		.value("DataDouble", DataDouble)
+		.value("DataString", DataString)
+		.value("DataPicture", DataPicture)
+		.value("DataVector", DataVector)
+		.value("DataFile", DataFile)
+		.value("DataNone", DataNone);
 
 }
 
