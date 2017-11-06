@@ -50,10 +50,13 @@ BOOST_PYTHON_MODULE(STIPy)
 
 
 //	class_<SynchronousEventAdapterPy, std::unique_ptr<SynchronousEventAdapterPy>>("SynchronousEvent", "STI event class.",
-	
-	class_<SynchronousEventAdapterPy, boost::noncopyable>("SynchronousEvent", "STI event class.",
-			init<double, STI_Device_Adapter_Wrapper*>(args("Time", "Device"), "__init__ docstring"))
+//	class_<SynchronousEventAdapterPy, boost::noncopyable>("SynchronousEvent", "STI event class.",
+
+	class_<SynchronousEventAdapterPy, boost::shared_ptr<SynchronousEventAdapterPy>, boost::noncopyable>("SynchronousEvent", "STI event class.",
+		boost::python::no_init)
+//			init<double, STI_Device_Adapter_Wrapper*>(args("Time", "Device"), "__init__ docstring"))
 //		.def("setupEvent", &SynchronousEventAdapterPy::setupEvent)
+		.def("__init__", boost::python::make_constructor(&SynchronousEventAdapterPy::create_event))
 		.def("setupEvent", &SynchronousEventAdapterPub::setupEvent_py, &SynchronousEventAdapterPy::default_setupEvent_py)
 		;
 

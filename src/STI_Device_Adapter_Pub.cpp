@@ -169,8 +169,8 @@ void STI_Device_Adapter_Pub::parseDeviceEvents(const RawEventMap& eventsIn, Sync
 		//SynchronousEventAdapterPy& e = boost::python::extract<SynchronousEventAdapterPy>(eventsOutPy[i]);
 		
 		//boost::python::extract<SynchronousEventAdapterPy&> get_evt(eventsOutPy[i]);
-		boost::python::extract<SynchronousEventAdapterPy*> get_evt2(eventsOutPy[i]);
-		//boost::python::extract<boost::shared_ptr<SynchronousEventAdapterPy>> get_evt3(eventsOutPy[i]);
+		//boost::python::extract<SynchronousEventAdapterPy*> get_evt2(eventsOutPy[i]);
+		boost::python::extract<boost::shared_ptr<SynchronousEventAdapterPy>> get_evt3(eventsOutPy[i]);
 
 		//get_evt3()->setupEvent();
 
@@ -193,12 +193,17 @@ void STI_Device_Adapter_Pub::parseDeviceEvents(const RawEventMap& eventsIn, Sync
 		boost::python::object o(eventsOutPy[i]);
 		std::cout << "Refcount a: " << o.ptr()->ob_refcnt << std::endl;
 		
-		Py_IncRef(o.ptr());		//almost certainly a memory leak.  Python never deletes, but c++ does?
-		std::cout << "Refcount b: " << o.ptr()->ob_refcnt << std::endl;
-		eventsOut.push_back(get_evt2());
+		//Py_IncRef(o.ptr());		//almost certainly a memory leak.  Python never deletes, but c++ does?
+		//std::cout << "Refcount b: " << o.ptr()->ob_refcnt << std::endl;
+		//eventsOut.push_back(get_evt2());
+		
+		eventsOut.push_back(get_evt3().get());
+		//eventsOut.push_back(get_evt2());
 
 		// Here is the answer:
 		// https://stackoverflow.com/questions/14642216/make-boost-python-not-delete-the-c-object-in-destructor
+
+
 
 		//boost::python::handle<> h(eventsOutPy[i]);
 
@@ -212,9 +217,9 @@ void STI_Device_Adapter_Pub::parseDeviceEvents(const RawEventMap& eventsIn, Sync
 		//	std::cout << "setupEvent error" << std::endl;
 		//}
 
-		//std::cout << "eventsOut.back().setup():" << std::endl;
+		std::cout << "eventsOut.back().setup():" << std::endl;
 		//eventsOut.back().setup();
-		//std::cout << "leaving parse...." << std::endl;
+		std::cout << "leaving parse...." << std::endl;
 	}
 
 //	eventsOut = eventsOutPy;

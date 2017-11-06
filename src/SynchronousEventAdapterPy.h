@@ -12,6 +12,8 @@
 //	SynchronousEventPyWrapper(const boost::shared_ptr<SynchronousEventAdapterPy>& evt);
 //};
 
+
+
 class SynchronousEventAdapterPub : public STI_Device::SynchronousEventAdapter
 {
 public:
@@ -21,6 +23,9 @@ public:
 
 	void setupEvent();
 	virtual void setupEvent_py();
+	
+//	static void no_op(SynchronousEventAdapterPub*);
+//	static boost::shared_ptr<SynchronousEventAdapterPub> create_event(double time, STI_Device_Adapter_Wrapper* device);
 };
 
 
@@ -44,9 +49,23 @@ public:
 	//	evt_ = evt;
 	//}
 
+	static void no_op(SynchronousEventAdapterPy*);
+	static boost::shared_ptr<SynchronousEventAdapterPy> create_event(double time, STI_Device_Adapter_Wrapper* device);
+
 //	boost::shared_ptr<SynchronousEventAdapterPy> evt_;
 };
 
+//void no_op(SynchronousEventAdapterPy*) {};
+//
+////factory function that makes shared_ptrs with custom deleter (no_op)
+//boost::shared_ptr<SynchronousEventAdapterPy> create_event(double time, STI_Device_Adapter_Wrapper* device)
+//{
+//	return boost::shared_ptr<SynchronousEventAdapterPy>(
+//		new SynchronousEventAdapterPy(time, device),
+//		&no_op);
+//}
+
 
 #endif
+
 
