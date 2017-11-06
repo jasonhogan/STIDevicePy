@@ -1,4 +1,5 @@
 ﻿import STIPy
+import collections
 
 orb = STIPy.ORBManager()
 
@@ -69,8 +70,12 @@ class TestDevice(STIPy.STI_Device):
         return "python help!"
     def parseDeviceEvents(self, eventsIn, eventsOut):
         print("Back in python!")
-        for key in eventsIn:
-            print key, 'corresponds to', eventsIn[key][0].time()
+
+        od = collections.OrderedDict(sorted(eventsIn.items()))
+        for key in od:
+            print key, 'corresponds to', od[key][0].time()
+        #for key in eventsIn:
+        #    print key, 'corresponds to', eventsIn[key][0].time()
         
         for key in eventsIn:
             evt = TestEvent(eventsIn[key][0].time(), self)

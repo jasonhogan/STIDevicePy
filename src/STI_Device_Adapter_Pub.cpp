@@ -139,9 +139,16 @@ void convertList(const std::vector<RawEvent>& vec, boost::python::api::object_it
 void STI_Device_Adapter_Pub::parseDeviceEvents(const RawEventMap& eventsIn, SynchronousEventVector& eventsOut)
 {
 	//also see:  https://stackoverflow.com/questions/6157409/stdvector-to-boostpythonlist
+	
+	// Useful at one point, although not what is being used:
+	// https://stackoverflow.com/questions/14642216/make-boost-python-not-delete-the-c-object-in-destructor
 
 	std::cout << "(3) parseDeviceEvents" << std::endl;
 	
+	//Python dict is unordered.  Not the right structure. Should probably convert to:
+	// list [ tuple(time, list [events ...]), tuple(...), ... ]
+
+	//Convert:  eventsIn --> eventsInPy
 	boost::python::dict eventsInPy;
 	boost::python::list rawEventsPy;
 
@@ -156,101 +163,21 @@ void STI_Device_Adapter_Pub::parseDeviceEvents(const RawEventMap& eventsIn, Sync
 		eventsInPy[it->first] = rawEventsPy;
 	}
 
-//This works:
-//	for (auto it = eventsIn.begin(); it != eventsIn.end(); ++it) {
-//		eventsInPy[it->first] = boost::python::list();
-//		boost::python::list l = boost::python::extract<boost::python::list>(eventsInPy[it->first]);
-////		std::cout << "t=" << it->first << " len=" << len(l);
-//		
-//		//convertList(it->second, eventsInPy[it->first]);
-//		for (auto& evts : it->second) {
-//		//	RawEventPy e = evts;
-//			l.append(RawEventPy(evts));
-//		}
-//	}
-
 	boost::python::list eventsOutPy;
 
-
-	std::cout << "(3) parseDeviceEvents calling parseDeviceEvents_py" << std::endl;
-
-	parseDeviceEvents_py(eventsInPy, eventsOutPy);
+	parseDeviceEvents_py(eventsInPy, eventsOutPy);	//call to python implementation
 	
-//	for (int x = 0; x < eventsOutPy.count(x); x++) {
-//		std::cout << "event: " << std::endl;
-////		eventsOutPy.index(x).setupEvent();
-//	}
-
-	std::cout << "Entering for loop: " << std::endl;
-
+	//Convert:  eventsOutPy --> eventsOut
 	for (int i = 0; i < len(eventsOutPy); ++i)
 	{
-		std::cout << "Loop: " << i << std::endl;
-		
-		//SynchronousEventAdapterPy& e = boost::python::extract<SynchronousEventAdapterPy>(eventsOutPy[i]);
-		
-		//boost::python::extract<SynchronousEventAdapterPy&> get_evt(eventsOutPy[i]);
-		//boost::python::extract<SynchronousEventAdapterPy*> get_evt2(eventsOutPy[i]);
-		//boost::python::extract<boost::shared_ptr<SynchronousEventAdapterPy>> get_evt3(eventsOutPy[i]);
-		boost::python::extract<std::auto_ptr<SynchronousEventAdapterPy>> get_evt4(eventsOutPy[i]);
+		boost::python::extract<std::auto_ptr<SynchronousEventAdapterPy>> extract_evt(eventsOutPy[i]);
 
-		//get_evt3()->setupEvent();
+		std::auto_ptr<SynchronousEventAdapterPy>& evt_ptr = extract_evt();
 
-//		hold = get_evt2;
-
-		//boost::python::handle<SynchronousEventAdapterPy> h(
-		//	boost::python::borrowed(
-		//		get_evt2()
-		//		));
-
-
-		//boost::python::borrowed(get_evt2());
-		//eventsOut.push_back(get_evt2());
-
-	
-		//boost::shared_ptr<SynchronousEventAdapterPy> tmp = get_evt3();
-		//tmp->addRef(tmp);
-		//eventsOut.push_back(*tmp);
-
-		//boost::python::object o(eventsOutPy[i]);
-		//std::cout << "Refcount a: " << o.ptr()->ob_refcnt << std::endl;
-		
-		//Py_IncRef(o.ptr());		//almost certainly a memory leak.  Python never deletes, but c++ does?
-		//std::cout << "Refcount b: " << o.ptr()->ob_refcnt << std::endl;
-		//eventsOut.push_back(get_evt2());
-		
-		//eventsOut.push_back(get_evt3().get());
-		//eventsOut.push_back(get_evt2());
-
-		//get_evt4().
-		boost::python::object o(eventsOutPy[i]);
-		get_evt4().get()->addRef(o.ptr());
-		eventsOut.push_back(get_evt4().get());
-		get_evt4().release();
-
-		// Here is the answer:
-		// https://stackoverflow.com/questions/14642216/make-boost-python-not-delete-the-c-object-in-destructor
-
-
-
-		//boost::python::handle<> h(eventsOutPy[i]);
-
-
-		//try {
-		//	std::cout << "Event time: " << get_evt().getTime() << std::endl;
-		//	get_evt().setupEvent();
-		//	std::cout << "In try" << std::endl;
-		//}
-		//catch (...) {
-		//	std::cout << "setupEvent error" << std::endl;
-		//}
-
-		std::cout << "eventsOut.back().setup():" << std::endl;
-		//eventsOut.back().setup();
-		std::cout << "leaving parse...." << std::endl;
+		evt_ptr.get()->addRef(eventsOutPy[i]().ptr());		//ptr() returns PyObject* of the event created in python.
+		eventsOut.push_back(evt_ptr.get());					//eventsOut is boost::ptr_vector (takes ownership).
+		evt_ptr.release();									//Make the auto_ptr give up ownership so it doesn't call delete.
 	}
-
-//	eventsOut = eventsOutPy;
 }
 
 
