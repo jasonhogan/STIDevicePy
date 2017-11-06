@@ -1,8 +1,11 @@
 
 
-class RawEvent:
+class RawEvent(object):
     def __init__(self, time):
         self.time = time
+        return
+    def __del__(self):
+        print("RawEvent is destroyed: " + str(self.time))
         return
     def getTime(self) :
         return self.time
@@ -20,7 +23,19 @@ for key in eventsIn:
     print key, 'corresponds to', eventsIn[key][0].getTime()
 
 
-class SynchronousEvent:
-    def playEvent(self):
-        print
         
+evt2 = RawEvent(2)
+
+
+
+class FooType(object):
+    def __init__(self, id):
+        self.id = id
+        print self.id, 'born'
+
+    def __del__(self):
+        print self.id, 'died'
+
+
+ft = FooType(1)
+

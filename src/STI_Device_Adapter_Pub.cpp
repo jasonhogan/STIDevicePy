@@ -126,7 +126,15 @@ std::string STI_Device_Adapter_Pub::execute(int argc, char* argv[])
 { 
 	return STI_Device_Adapter::execute(argc, argv);
 }
+void convertList(const std::vector<RawEvent>& vec, boost::python::api::object_item& obj)
+{
+	boost::python::list rawEventsPy = boost::python::list();
 
+	for (auto evts : vec) {
+		rawEventsPy.append(RawEventPy(evts));
+	}
+	obj = rawEventsPy;
+}
 
 void STI_Device_Adapter_Pub::parseDeviceEvents(const RawEventMap& eventsIn, SynchronousEventVector& eventsOut)
 {
@@ -138,15 +146,28 @@ void STI_Device_Adapter_Pub::parseDeviceEvents(const RawEventMap& eventsIn, Sync
 	boost::python::list rawEventsPy;
 
 	for (auto it = eventsIn.begin(); it != eventsIn.end(); ++it) {
-		
+
 		rawEventsPy = boost::python::list();
 
-		for (auto evts : it->second) {
+		for (auto& evts : it->second) {
 			rawEventsPy.append(RawEventPy(evts));
 		}
 
 		eventsInPy[it->first] = rawEventsPy;
 	}
+
+//This works:
+//	for (auto it = eventsIn.begin(); it != eventsIn.end(); ++it) {
+//		eventsInPy[it->first] = boost::python::list();
+//		boost::python::list l = boost::python::extract<boost::python::list>(eventsInPy[it->first]);
+////		std::cout << "t=" << it->first << " len=" << len(l);
+//		
+//		//convertList(it->second, eventsInPy[it->first]);
+//		for (auto& evts : it->second) {
+//		//	RawEventPy e = evts;
+//			l.append(RawEventPy(evts));
+//		}
+//	}
 
 	boost::python::list eventsOutPy;
 
@@ -170,7 +191,8 @@ void STI_Device_Adapter_Pub::parseDeviceEvents(const RawEventMap& eventsIn, Sync
 		
 		//boost::python::extract<SynchronousEventAdapterPy&> get_evt(eventsOutPy[i]);
 		//boost::python::extract<SynchronousEventAdapterPy*> get_evt2(eventsOutPy[i]);
-		boost::python::extract<boost::shared_ptr<SynchronousEventAdapterPy>> get_evt3(eventsOutPy[i]);
+		//boost::python::extract<boost::shared_ptr<SynchronousEventAdapterPy>> get_evt3(eventsOutPy[i]);
+		boost::python::extract<std::auto_ptr<SynchronousEventAdapterPy>> get_evt4(eventsOutPy[i]);
 
 		//get_evt3()->setupEvent();
 
@@ -190,15 +212,21 @@ void STI_Device_Adapter_Pub::parseDeviceEvents(const RawEventMap& eventsIn, Sync
 		//tmp->addRef(tmp);
 		//eventsOut.push_back(*tmp);
 
-		boost::python::object o(eventsOutPy[i]);
-		std::cout << "Refcount a: " << o.ptr()->ob_refcnt << std::endl;
+		//boost::python::object o(eventsOutPy[i]);
+		//std::cout << "Refcount a: " << o.ptr()->ob_refcnt << std::endl;
 		
 		//Py_IncRef(o.ptr());		//almost certainly a memory leak.  Python never deletes, but c++ does?
 		//std::cout << "Refcount b: " << o.ptr()->ob_refcnt << std::endl;
 		//eventsOut.push_back(get_evt2());
 		
-		eventsOut.push_back(get_evt3().get());
+		//eventsOut.push_back(get_evt3().get());
 		//eventsOut.push_back(get_evt2());
+
+		//get_evt4().
+		boost::python::object o(eventsOutPy[i]);
+		get_evt4().get()->addRef(o.ptr());
+		eventsOut.push_back(get_evt4().get());
+		get_evt4().release();
 
 		// Here is the answer:
 		// https://stackoverflow.com/questions/14642216/make-boost-python-not-delete-the-c-object-in-destructor

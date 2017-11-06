@@ -6,9 +6,11 @@ orb = STIPy.ORBManager()
 class TestEvent(STIPy.SynchronousEvent):
     def __init__(self, time, device):
         STIPy.SynchronousEvent.__init__(self, time, device)
+        self.localtime=time
         return
-    #def __deinit__(self):
-    #    print("TestEvent is destroyed")
+    def __deinit__(self):
+        print("TestEvent is destroyed: " + str(self.localtime))
+        return
     def setupEvent(self):
         print("lsdfjasldkjf")
         return
@@ -72,10 +74,11 @@ class TestDevice(STIPy.STI_Device):
         
         for key in eventsIn:
             evt = TestEvent(eventsIn[key][0].time(), self)
+            eventsOut.append(evt)
 
         #evt = STIPy.SynchronousEvent(20, self)
         #evt = TestEvent(20, self)
-        eventsOut.append(evt)
+        #eventsOut.append(evt)
         return
 
 

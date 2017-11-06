@@ -34,8 +34,15 @@ class SynchronousEventAdapterPy : public SynchronousEventAdapterPub,
 {
 public:
 	SynchronousEventAdapterPy(double time, STI_Device_Adapter_Wrapper* device) :
-		SynchronousEventAdapterPub(time, device) {}
-	virtual  ~SynchronousEventAdapterPy() {}
+		SynchronousEventAdapterPub(time, device), added(false) {}
+	virtual ~SynchronousEventAdapterPy() 
+	{
+
+		if(added) {
+			Py_DecRef(evt_);
+			std::cout << "SynchronousEventAdapterPy::Py_DecRef" << std::endl;
+		}
+	}
 
 	virtual void setupEvent_py();
 	void default_setupEvent_py();
@@ -44,14 +51,18 @@ public:
 	//virtual void playEvent() {}
 	//virtual void collectMeasurementData() {}
 
-	//void addRef(const boost::shared_ptr<SynchronousEventAdapterPy>& evt)
-	//{
-	//	evt_ = evt;
-	//}
+	void addRef(PyObject* evt)
+	{
+		added = true;
+		evt_ = evt;
+		Py_IncRef(evt_);
+	}
 
 	static void no_op(SynchronousEventAdapterPy*);
 	static boost::shared_ptr<SynchronousEventAdapterPy> create_event(double time, STI_Device_Adapter_Wrapper* device);
 
+	bool added;
+	PyObject* evt_;
 //	boost::shared_ptr<SynchronousEventAdapterPy> evt_;
 };
 
