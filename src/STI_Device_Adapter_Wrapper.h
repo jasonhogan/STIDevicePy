@@ -36,8 +36,14 @@ public:
 
 //	virtual bool writeChannel_py(unsigned short channel, double value);
 //	bool default_writeChannel_py(unsigned short channel, double value);
-	virtual bool writeChannel_py(unsigned short channel, boost::python::object value);
-	bool default_writeChannel_py(unsigned short channel, boost::python::object value);
+	virtual bool writeChannel_py(unsigned short channel, const boost::python::object& value);
+	bool default_writeChannel_py(unsigned short channel, const boost::python::object& value);
+
+	virtual bool readChannel_py(unsigned short channel, const boost::python::object& valueIn, boost::python::object& dataOut);
+	bool default_readChannel_py(unsigned short channel, const boost::python::object& valueIn, boost::python::object& dataOut);
+
+	virtual bool readChannel_py2(unsigned short channel, const boost::python::object& valueIn, MixedValuePy& dataOut);
+	bool default_readChannel_py2(unsigned short channel, const boost::python::object& valueIn, MixedValuePy& dataOut);
 
 
 	virtual void definePartnerDevices();
@@ -45,6 +51,10 @@ public:
 
 	virtual std::string execute(int argc, char* argv[]);
 	std::string default_execute(int argc, char* argv[]);
+
+	virtual void parseDeviceEvents_py(const boost::python::dict& eventsIn, boost::python::list& eventsOut);
+	void default_parseDeviceEvents_py(const boost::python::dict& eventsIn, boost::python::list& eventsOut);
+
 
 	virtual void stopEventPlayback();
 	void default_stopEventPlayback();
@@ -54,6 +64,9 @@ public:
 
 	virtual void resumeEventPlayback();
 	void default_resumeEventPlayback();
+
+	virtual std::string getDeviceHelp();
+	std::string default_getDeviceHelp();
 
 };
 

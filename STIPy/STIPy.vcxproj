@@ -145,15 +145,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\MixedValuePy.cpp" />
     <ClCompile Include="..\src\ORBManagerPy.cpp" />
+    <ClCompile Include="..\src\RawEventPy.cpp" />
     <ClCompile Include="..\src\STIDevicePy.cpp" />
     <ClCompile Include="..\src\STI_Device_Adapter_Pub.cpp" />
     <ClCompile Include="..\src\STI_Device_Adapter_Wrapper.cpp" />
+    <ClCompile Include="..\src\SynchronousEventAdapterPy.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\MixedValuePy.h" />
     <ClInclude Include="..\src\ORBManagerPy.h" />
+    <ClInclude Include="..\src\RawEventPy.h" />
     <ClInclude Include="..\src\STI_Device_Adapter_Pub.h" />
     <ClInclude Include="..\src\STI_Device_Adapter_Wrapper.h" />
+    <ClInclude Include="..\src\SynchronousEventAdapterPy.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

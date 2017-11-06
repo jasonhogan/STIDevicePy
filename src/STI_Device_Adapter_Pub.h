@@ -6,8 +6,14 @@
 #include <STI_Device_Adapter.h>
 #include "ORBManagerPy.h"
 
+#include "MixedValuePy.h"
 
 #include <string>
+
+//#include "SynchronousEventAdapterPy.h"
+
+class SynchronousEventAdapterPy;
+
 
 // This class exposes protected STI_Device_Adapter methods so they can be accessed by boost::python
 // _Pub stands for "public" access.
@@ -30,16 +36,24 @@ public:
 
 	virtual void defineChannels();
 	bool writeChannel(unsigned short channel, const MixedValue& value);
-	virtual bool writeChannel_py(unsigned short channel, boost::python::object value);
-//	virtual bool writeChannel_py(unsigned short channel, double value);
+	virtual bool writeChannel_py(unsigned short channel, const boost::python::object& value);
+	bool readChannel(unsigned short channel, const MixedValue& valueIn, MixedData& dataOut);
+	virtual bool readChannel_py(unsigned short channel, const boost::python::object& valueIn, boost::python::object& dataOut);
+	virtual bool readChannel_py2(unsigned short channel, const boost::python::object& valueIn, MixedValuePy& dataOut);
 
 	virtual void definePartnerDevices();
 	virtual std::string execute(int argc, char* argv[]);
+
+	// Device-specific event parsing
+	virtual void parseDeviceEvents(const RawEventMap& eventsIn, SynchronousEventVector& eventsOut);
+	virtual void parseDeviceEvents_py(const boost::python::dict& eventsIn, boost::python::list& eventsOut);
 
 	// Event Playback control
 	virtual void stopEventPlayback();
 	virtual void pauseEventPlayback();
 	virtual void resumeEventPlayback();
+
+	virtual std::string getDeviceHelp();
 
 
 	void addOutputChannel(unsigned short Channel, TValue OutputType, std::string defaultName="");
@@ -59,6 +73,9 @@ public:
 	//{
 	//	STI_Device_Adapter::addAttribute(key, initialValue, allowedValues)
 	//}
+
+//	boost::python::extract<SynchronousEventAdapterPy*> hold;
+
 };
 
 
