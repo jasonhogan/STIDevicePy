@@ -60,6 +60,36 @@ bool STI_Device_Adapter_Pub::writeChannel_py(unsigned short channel, const boost
 	//return STI_Device_Adapter::writeChannel(channel, mVal);
 }
 
+bool STI_Device_Adapter_Pub::setMixedData_tmp(const MixedValue* valueIn, MixedData& dataOut)
+{
+	switch (valueIn->getType()) {
+	case MixedValue::Double:
+		dataOut.setValue(valueIn->getDouble());
+		break;
+	case MixedValue::Int:
+		dataOut.setValue(valueIn->getInt());
+		break;
+	case MixedValue::String:
+		dataOut.setValue(valueIn->getString());
+		break;
+	case MixedValue::Boolean:
+		dataOut.setValue(valueIn->getBoolean());
+		break;
+	case MixedValue::Vector:
+		//Not tested...
+		for (const MixedValue& val : valueIn->getVector()) {
+			std::cout << val.print() << std::endl;
+			MixedData tmp;
+			setMixedData_tmp(&val, tmp);
+			dataOut.addValue(tmp);
+		}
+		break;
+	case MixedValue::Empty:
+		break;
+	}
+	return true;
+}
+
 bool STI_Device_Adapter_Pub::readChannel(unsigned short channel, const MixedValue& valueIn, MixedData& dataOut)
 {
 	std::cout << "(3) readChannel_py" << std::endl;
@@ -87,7 +117,14 @@ bool STI_Device_Adapter_Pub::readChannel(unsigned short channel, const MixedValu
 	std::cout << "after static_cast" << std::endl;
 	MixedValue* v2 = &outVal;
 
-	dataOut.setValue(*v2);
+	std::cout << "MixedValue: " << v2->print() << std::endl;
+
+	//TODO: This should work, but MixedData doesn't know how to convert from MixedValue.
+	//Aside: WHY are there MixedValue and MixedData!! Merge...
+	//dataOut.setValue(*v2);
+	
+	setMixedData_tmp(v2, dataOut);	//temp hack
+	
 	//dataOut.setValue(outVal.getString());
 	std::cout << "after setvalue" << std::endl;
 

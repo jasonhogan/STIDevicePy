@@ -22,18 +22,37 @@ void MixedValuePy::setValue(const boost::python::object& value)
 {
 //	std::string str = boost::python::extract<std::string>(boost::python::str(value))();
 
+	//The order of these is important, since it trys to convert.
 	if (setValueExtract<double>(value)) return;
 	if (setValueExtract<int>(value)) return;
 	if (setValueExtract<std::string>(value)) return;
 	if (setValueExtract<bool>(value)) return;
+
+	boost::python::extract<boost::python::list> list_val(value);
+	if (list_val.check()) {
+		for (int i = 0; i < len(list_val()); ++i) {
+			addValue(list_val()[i]);
+		}
+	}
 }
 
 void MixedValuePy::addValue(const boost::python::object& value)
 {
-	if (addValueExtract<bool>(value)) return;
-	if (addValueExtract<int>(value)) return;
+	//The order of these is important, since it trys to convert.
 	if (addValueExtract<double>(value)) return;
+	if (addValueExtract<int>(value)) return;
 	if (addValueExtract<std::string>(value)) return;
+	if (addValueExtract<bool>(value)) return;
+
+	boost::python::extract<boost::python::list> list_val(value);
+	if (list_val.check()) {
+		//it's a list; add a MixedValue vector node, and addValues to that
+		MixedValuePy mixedVal;
+		for (int i = 0; i < len(list_val()); ++i) {
+			mixedVal.addValue(list_val()[i]);
+		}
+		MixedValue::addValue(mixedVal);	//this might be really inefficient right now... multiple deep copies?
+	}
 }
 
 void MixedValuePy::clear()

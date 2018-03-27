@@ -37,8 +37,12 @@ class TestDevice(STIPy.STI_Device):
         print ("define channels...........5.........................................")
         self.addOutputChannel(0,STIPy.TValue.ValueNumber,"out")
         self.addOutputChannel(1,STIPy.TValue.ValueString,"out2")
-        self.addOutputChannel(2, STIPy.TValue.ValueNumber)
-        self.addInputChannel(3, STIPy.TData.DataString)
+        self.addOutputChannel(2, STIPy.TValue.ValueString)
+        # self.addInputChannel(3, STIPy.TData.DataDouble)
+        # self.addInputChannel(3, STIPy.TData.DataString)
+        self.addInputChannel(3, STIPy.TData.DataVector)
+        # self.addInputChannel(3, STIPy.TData.DataVector, STIPy.TValue.ValueVector)   # Not working; can't use vector value currently...
+
         return
         
     def defineAttributes(self):
@@ -70,7 +74,8 @@ class TestDevice(STIPy.STI_Device):
         print("in python")
         #print("ch: " + str(channel) + " value: " + str(valueIn))
         #dataOut.setValue("hello from read channel")
-        dataOut.setValue(3*valueIn)
+        #dataOut.setValue(3*valueIn)
+        dataOut.setValue([2,4,valueIn])
         return True
     def getDeviceHelp(self):
         return "python help!"

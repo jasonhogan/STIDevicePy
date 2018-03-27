@@ -70,6 +70,8 @@ public:
 	static void convertRawEventMap(const RawEventMap& eventsIn, boost::python::dict& eventsInPy);
 	static void convertRawEventMap(const RawEventMap& eventsIn, boost::python::list& eventsInPy);
 
+	bool setMixedData_tmp(const MixedValue* valueIn, MixedData& dataOut);
+
 
 	//template<class T>
 	//void addAttribute(std::string key, T initialValue, std::string allowedValues = "")
