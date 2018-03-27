@@ -46,7 +46,7 @@ public:
 
 	// Device-specific event parsing
 	virtual void parseDeviceEvents(const RawEventMap& eventsIn, SynchronousEventVector& eventsOut);
-	virtual void parseDeviceEvents_py(const boost::python::dict& eventsIn, boost::python::list& eventsOut);
+	virtual void parseDeviceEvents_py(const boost::python::list& eventsIn, boost::python::list& eventsOut);
 
 	// Event Playback control
 	virtual void stopEventPlayback();
@@ -66,6 +66,9 @@ public:
 	bool setAttribute(std::string key, boost::python::object value);
 
 	bool addPartnerDevice(std::string partnerName, std::string IP, short module, std::string deviceName);
+
+	static void convertRawEventMap(const RawEventMap& eventsIn, boost::python::dict& eventsInPy);
+	static void convertRawEventMap(const RawEventMap& eventsIn, boost::python::list& eventsInPy);
 
 
 	//template<class T>

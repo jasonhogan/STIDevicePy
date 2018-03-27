@@ -52,8 +52,8 @@ public:
 	virtual std::string execute(int argc, char* argv[]);
 	std::string default_execute(int argc, char* argv[]);
 
-	virtual void parseDeviceEvents_py(const boost::python::dict& eventsIn, boost::python::list& eventsOut);
-	void default_parseDeviceEvents_py(const boost::python::dict& eventsIn, boost::python::list& eventsOut);
+	virtual void parseDeviceEvents_py(const boost::python::list& eventsIn, boost::python::list& eventsOut);
+	void default_parseDeviceEvents_py(const boost::python::list& eventsIn, boost::python::list& eventsOut);
 
 
 	virtual void stopEventPlayback();

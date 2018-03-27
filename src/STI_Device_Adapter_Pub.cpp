@@ -126,32 +126,21 @@ std::string STI_Device_Adapter_Pub::execute(int argc, char* argv[])
 { 
 	return STI_Device_Adapter::execute(argc, argv);
 }
-void convertList(const std::vector<RawEvent>& vec, boost::python::api::object_item& obj)
+
+//void convertList(const std::vector<RawEvent>& vec, boost::python::api::object_item& obj)
+//{
+//	boost::python::list rawEventsPy = boost::python::list();
+//
+//	for (auto evts : vec) {
+//		rawEventsPy.append(RawEventPy(evts));
+//	}
+//	obj = rawEventsPy;
+//}
+
+void STI_Device_Adapter_Pub::convertRawEventMap(const RawEventMap& eventsIn, boost::python::dict& eventsInPy)
 {
-	boost::python::list rawEventsPy = boost::python::list();
-
-	for (auto evts : vec) {
-		rawEventsPy.append(RawEventPy(evts));
-	}
-	obj = rawEventsPy;
-}
-
-void STI_Device_Adapter_Pub::parseDeviceEvents(const RawEventMap& eventsIn, SynchronousEventVector& eventsOut)
-{
-	//also see:  https://stackoverflow.com/questions/6157409/stdvector-to-boostpythonlist
-	
-	// Useful at one point, although not what is being used:
-	// https://stackoverflow.com/questions/14642216/make-boost-python-not-delete-the-c-object-in-destructor
-
-	std::cout << "(3) parseDeviceEvents" << std::endl;
-	
-	//Python dict is unordered.  Not the right structure. Should probably convert to:
-	// list [ tuple(time, list [events ...]), tuple(...), ... ]
-
-	//Convert:  eventsIn --> eventsInPy
-	boost::python::dict eventsInPy;
 	boost::python::list rawEventsPy;
-
+	
 	for (auto it = eventsIn.begin(); it != eventsIn.end(); ++it) {
 
 		rawEventsPy = boost::python::list();
@@ -162,26 +151,101 @@ void STI_Device_Adapter_Pub::parseDeviceEvents(const RawEventMap& eventsIn, Sync
 
 		eventsInPy[it->first] = rawEventsPy;
 	}
+}
+
+void STI_Device_Adapter_Pub::convertRawEventMap(const RawEventMap& eventsIn, boost::python::list& eventsInPy)
+{
+	boost::python::list rawEventsPy;
+
+	for (auto it = eventsIn.begin(); it != eventsIn.end(); ++it) {
+
+		rawEventsPy = boost::python::list();
+
+		for (auto& evts : it->second) {
+			rawEventsPy.append(RawEventPy(evts));
+		}
+		//tuple<double, boost::python::list> time_group(it->first, rawEventsPy);
+		//boost::python::object obj = time_group;
+		//eventsInPy.append(time_group);
+		
+		//eventsInPy.append(make_tuple(it->first, rawEventsPy));
+		//eventsInPy.append(boost::python::make_tuple(it->first, it->first));	//works
+		eventsInPy.append(boost::python::make_tuple(it->first, rawEventsPy));
+	}
+}
+
+
+void STI_Device_Adapter_Pub::parseDeviceEvents(const RawEventMap& eventsIn, SynchronousEventVector& eventsOut)
+{
+	//also see:  https://stackoverflow.com/questions/6157409/stdvector-to-boostpythonlist
+	
+	// Useful at one point, although not what is being used:
+	// https://stackoverflow.com/questions/14642216/make-boost-python-not-delete-the-c-object-in-destructor
+
+	// Also note this, for "GC Object already tracked" crash:
+	// https://stackoverflow.com/questions/23178606/debugging-python-fatal-error-gc-object-already-tracked
+
+	std::cout << "(3) parseDeviceEvents" << std::endl;
+	
+	//Python dict is unordered.  Not the right structure. Should probably convert to:
+	// list [ tuple(time, list [events ...]), tuple(...), ... ]
+
+	//Convert:  eventsIn --> eventsInPy
+	//boost::python::dict eventsInPy;
+	boost::python::list eventsInPy;
+
+	convertRawEventMap(eventsIn, eventsInPy);
+
+	//boost::python::list rawEventsPy;
+	//for (auto it = eventsIn.begin(); it != eventsIn.end(); ++it) {
+
+	//	rawEventsPy = boost::python::list();
+
+	//	for (auto& evts : it->second) {
+	//		rawEventsPy.append(RawEventPy(evts));
+	//	}
+
+	//	eventsInPy[it->first] = rawEventsPy;
+	//}
 
 	boost::python::list eventsOutPy;
 
 	parseDeviceEvents_py(eventsInPy, eventsOutPy);	//call to python implementation
 	
+	std::cout << "length: " << len(eventsOutPy) << std::endl;
+
 	//Convert:  eventsOutPy --> eventsOut
 	for (int i = 0; i < len(eventsOutPy); ++i)
 	{
-		boost::python::extract<std::auto_ptr<SynchronousEventAdapterPy>> extract_evt(eventsOutPy[i]);
+		boost::python::object obj(eventsOutPy[i]);
+		//boost::python::extract<std::auto_ptr<SynchronousEventAdapterPy>> extract_evt(eventsOutPy[i]);	//works
+		//boost::python::extract<std::auto_ptr<SynchronousEventAdapterPy>> extract_evt(obj);	//works
+		boost::python::extract<std::auto_ptr<SynchronousEventAdapterPy>> extract_evt(obj.ptr());	//works
 
+		if (!extract_evt.check()) {
+			std::cout << "It's a trap!" << std::endl;
+		}
 		std::auto_ptr<SynchronousEventAdapterPy>& evt_ptr = extract_evt();
+		
+		//evt_ptr->setupEvent();
+		
+		std::cout << "In loop: " << i << " t=" << evt_ptr->getTime() << std::endl;
+		//PyObject* evtA = eventsOutPy[i]().ptr();
+		std::cout << "Got pointer" << std::endl;
+		
+		evt_ptr.get()->addRef(obj.ptr());		//ptr() returns PyObject* of the event created in python.
 
-		evt_ptr.get()->addRef(eventsOutPy[i]().ptr());		//ptr() returns PyObject* of the event created in python.
+		//evt_ptr.get()->addRef(eventsOutPy[i]().ptr());		//ptr() returns PyObject* of the event created in python.
+		std::cout << "A" << std::endl;
 		eventsOut.push_back(evt_ptr.get());					//eventsOut is boost::ptr_vector (takes ownership).
+		std::cout << "B" << std::endl;
 		evt_ptr.release();									//Make the auto_ptr give up ownership so it doesn't call delete.
+		std::cout << "C" << std::endl;
 	}
 }
 
 
-void STI_Device_Adapter_Pub::parseDeviceEvents_py(const boost::python::dict& eventsIn, boost::python::list& eventsOut)
+void STI_Device_Adapter_Pub::parseDeviceEvents_py(const boost::python::list& eventsIn, boost::python::list& eventsOut)
 {
 	std::cout << "(5) parseDeviceEvents_py" << std::endl;
 }

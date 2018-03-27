@@ -5,6 +5,10 @@
 #include <STI_Device_Adapter.h>
 #include <STI_Device.h>
 
+#include "SynchronousEventAdapterPub.h"
+
+
+
 
 //class SynchronousEventPyWrapper : public STI_Device::SynchronousEvent
 //{
@@ -12,21 +16,6 @@
 //	SynchronousEventPyWrapper(const boost::shared_ptr<SynchronousEventAdapterPy>& evt);
 //};
 
-
-
-class SynchronousEventAdapterPub : public STI_Device::SynchronousEventAdapter
-{
-public:
-	SynchronousEventAdapterPub(double time, STI_Device* device) : 
-		STI_Device::SynchronousEventAdapter(time, device) {}
-	virtual  ~SynchronousEventAdapterPub() {}
-
-	void setupEvent();
-	virtual void setupEvent_py();
-	
-//	static void no_op(SynchronousEventAdapterPub*);
-//	static boost::shared_ptr<SynchronousEventAdapterPub> create_event(double time, STI_Device_Adapter_Wrapper* device);
-};
 
 
 class SynchronousEventAdapterPy : public SynchronousEventAdapterPub,
@@ -47,12 +36,32 @@ public:
 	virtual void setupEvent_py();
 	void default_setupEvent_py();
 
-	//virtual void loadEvent() {}
-	//virtual void playEvent() {}
-	//virtual void collectMeasurementData() {}
+	virtual void loadEvent_py();
+	void default_loadEvent_py();
+
+	virtual void playEvent_py();
+	void default_playEvent_py();
+
+	virtual void collectMeasurementData_py();
+	void default_collectMeasurementData_py();
+
+
+
+	//virtual void stop();
+	//virtual void reset();
+
+	//virtual void waitBeforeLoad();
+	//virtual void waitBeforePlay();
+	//virtual void waitBeforeCollectData();
+
+	//NOT VIRTUAL, no need to override? Expose to python.
+	//void setEventNumber(unsigned eventNumber) { eventNumber_ = eventNumber; }
+	//void addMeasurement(const RawEvent& measurementEvent);
 
 	void addRef(PyObject* evt)
 	{
+		std::cout << "addRef" << std::endl;
+
 		added = true;
 		evt_ = evt;
 		Py_IncRef(evt_);
@@ -64,6 +73,7 @@ public:
 	bool added;
 	PyObject* evt_;
 //	boost::shared_ptr<SynchronousEventAdapterPy> evt_;
+
 };
 
 //void no_op(SynchronousEventAdapterPy*) {};

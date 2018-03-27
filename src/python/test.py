@@ -15,6 +15,12 @@ class TestEvent(STIPy.SynchronousEvent):
     def setupEvent(self):
         print("lsdfjasldkjf")
         return
+    def loadEvent(self):
+        print("load")
+        return
+    def playEvent(self):
+        print("play")
+        return
 
 
 class SimpleDevice(STIPy.STI_Device):
@@ -71,15 +77,24 @@ class TestDevice(STIPy.STI_Device):
     def parseDeviceEvents(self, eventsIn, eventsOut):
         print("Back in python!")
 
-        od = collections.OrderedDict(sorted(eventsIn.items()))
-        for key in od:
-            print key, 'corresponds to', od[key][0].time()
-        #for key in eventsIn:
-        #    print key, 'corresponds to', eventsIn[key][0].time()
+        #od = collections.OrderedDict(sorted(eventsIn.items()))
+        #for key in od:
+        #    print key, 'corresponds to', od[key][0].time()
         
         for key in eventsIn:
-            evt = TestEvent(eventsIn[key][0].time(), self)
+            #print key, 'corresponds to', eventsIn[key][0].time()
+            print key
+        
+        for key in eventsIn:
+            #evt = TestEvent(eventsIn[key][0].time(), self)
+            #evt = TestEvent(key[1][0].time(), self)
+            print(key[0])
+            evt = TestEvent(key[0], self)
+
+            #evt.setupEvent()
+            #print(evt.localtime)
             eventsOut.append(evt)
+            #eventsOut.append(3)  ## this breaks it!
 
         #evt = STIPy.SynchronousEvent(20, self)
         #evt = TestEvent(20, self)

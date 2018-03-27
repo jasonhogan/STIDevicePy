@@ -151,6 +151,7 @@
     <ClCompile Include="..\src\STIDevicePy.cpp" />
     <ClCompile Include="..\src\STI_Device_Adapter_Pub.cpp" />
     <ClCompile Include="..\src\STI_Device_Adapter_Wrapper.cpp" />
+    <ClCompile Include="..\src\SynchronousEventAdapterPub.cpp" />
     <ClCompile Include="..\src\SynchronousEventAdapterPy.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -159,6 +160,7 @@
     <ClInclude Include="..\src\RawEventPy.h" />
     <ClInclude Include="..\src\STI_Device_Adapter_Pub.h" />
     <ClInclude Include="..\src\STI_Device_Adapter_Wrapper.h" />
+    <ClInclude Include="..\src\SynchronousEventAdapterPub.h" />
     <ClInclude Include="..\src\SynchronousEventAdapterPy.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -194,7 +194,7 @@ std::string STI_Device_Adapter_Wrapper::default_execute(int argc, char* argv[])
 	return this->STI_Device_Adapter_Pub::execute(argc, argv);
 }
 
-void STI_Device_Adapter_Wrapper::parseDeviceEvents_py(const boost::python::dict& eventsIn, boost::python::list& eventsOut)
+void STI_Device_Adapter_Wrapper::parseDeviceEvents_py(const boost::python::list& eventsIn, boost::python::list& eventsOut)
 {
 	//STI library calls this if there is a python override
 	if (boost::python::override parseDeviceEvents_py = this->get_override("parseDeviceEvents"))
@@ -215,7 +215,7 @@ void STI_Device_Adapter_Wrapper::parseDeviceEvents_py(const boost::python::dict&
 	STI_Device_Adapter_Pub::parseDeviceEvents_py(eventsIn, eventsOut);
 }
 
-void STI_Device_Adapter_Wrapper::default_parseDeviceEvents_py(const boost::python::dict& eventsIn, boost::python::list& eventsOut)
+void STI_Device_Adapter_Wrapper::default_parseDeviceEvents_py(const boost::python::list& eventsIn, boost::python::list& eventsOut)
 {
 	this->STI_Device_Adapter_Pub::parseDeviceEvents_py(eventsIn, eventsOut);
 }

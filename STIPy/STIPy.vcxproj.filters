@@ -36,6 +36,9 @@
     <ClCompile Include="..\src\SynchronousEventAdapterPy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\SynchronousEventAdapterPub.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\ORBManagerPy.h">
@@ -54,6 +57,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\SynchronousEventAdapterPy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\SynchronousEventAdapterPub.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

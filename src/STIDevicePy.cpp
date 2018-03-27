@@ -62,6 +62,9 @@ BOOST_PYTHON_MODULE(STIPy)
 //		.def("setupEvent", &SynchronousEventAdapterPy::setupEvent)
 //		.def("__init__", boost::python::make_constructor(&SynchronousEventAdapterPy::create_event))
 		.def("setupEvent", &SynchronousEventAdapterPub::setupEvent_py, &SynchronousEventAdapterPy::default_setupEvent_py)
+		.def("loadEvent", &SynchronousEventAdapterPub::loadEvent_py, &SynchronousEventAdapterPy::default_loadEvent_py)
+		.def("playEvent", &SynchronousEventAdapterPub::playEvent_py, &SynchronousEventAdapterPy::default_playEvent_py)
+		.def("collectMeasurementData", &SynchronousEventAdapterPub::collectMeasurementData_py, &SynchronousEventAdapterPy::default_collectMeasurementData_py)
 		;
 	//boost::python::implicitly_convertible<boost::shared_ptr<SynchronousEventAdapterPy>, boost::shared_ptr<SynchronousEventAdapterPub> >();
 

@@ -3,23 +3,6 @@
 #include "SynchronousEventAdapterPy.h"
 
 
-void SynchronousEventAdapterPub::setupEvent()
-{
-	std::cout << "(3) setupEvent" << std::endl;
-	setupEvent_py();
-//	return writeChannel_py(channel, obj);
-	//	return writeChannel_py(channel, value.getDouble());
-}
-
-void SynchronousEventAdapterPub::setupEvent_py()
-{
-	std::cout << "(4) setupEvent_py" << std::endl;
-
-	return;
-}
-
-
-
 void SynchronousEventAdapterPy::setupEvent_py()
 {
 	//STI library calls this if there is a python override
@@ -37,6 +20,62 @@ void SynchronousEventAdapterPy::default_setupEvent_py()
 {
 	this->SynchronousEventAdapterPub::setupEvent();
 }
+
+void SynchronousEventAdapterPy::loadEvent_py()
+{
+	//STI library calls this if there is a python override
+	if (boost::python::override loadEvent_py2 = static_cast<SynchronousEventAdapterPy*>(this)->get_override("loadEvent"))
+	{
+		//std::cout << "(1) SynchronousEventAdapterPy HERE !!*!*!" << std::endl;
+		loadEvent_py2(); // calls python override (implemented by user-defined python derived class)
+		return;
+	}
+	//std::cout << "(2) SynchronousEventAdapterPy loadEvent_py failed to find override" << std::endl;
+	SynchronousEventAdapterPub::loadEvent_py();
+}
+
+void SynchronousEventAdapterPy::default_loadEvent_py()
+{
+	this->SynchronousEventAdapterPub::loadEvent();
+}
+
+void SynchronousEventAdapterPy::playEvent_py()
+{
+	//STI library calls this if there is a python override
+	if (boost::python::override playEvent_py2 = static_cast<SynchronousEventAdapterPy*>(this)->get_override("playEvent"))
+	{
+		std::cout << "(1) SynchronousEventAdapterPy HERE !!*!*!" << std::endl;
+		playEvent_py2(); // calls python override (implemented by user-defined python derived class)
+		return;
+	}
+	//std::cout << "(2) SynchronousEventAdapterPy playEvent_py failed to find override" << std::endl;
+	SynchronousEventAdapterPub::playEvent_py();
+}
+
+void SynchronousEventAdapterPy::default_playEvent_py()
+{
+	this->SynchronousEventAdapterPub::playEvent();
+}
+
+void SynchronousEventAdapterPy::collectMeasurementData_py()
+{
+	//STI library calls this if there is a python override
+	if (boost::python::override collectMeasurementData_py2 = static_cast<SynchronousEventAdapterPy*>(this)->get_override("collectMeasurementData"))
+	{
+		//std::cout << "(1) SynchronousEventAdapterPy HERE !!*!*!" << std::endl;
+		collectMeasurementData_py2(); // calls python override (implemented by user-defined python derived class)
+		return;
+	}
+	//std::cout << "(2) SynchronousEventAdapterPy collectMeasurementData_py failed to find override" << std::endl;
+	SynchronousEventAdapterPub::collectMeasurementData_py();
+}
+
+void SynchronousEventAdapterPy::default_collectMeasurementData_py()
+{
+	this->SynchronousEventAdapterPub::collectMeasurementData();
+}
+
+
 
 
 
