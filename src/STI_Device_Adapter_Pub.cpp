@@ -9,6 +9,20 @@
 #include <string>
 #include <iostream>
 
+#define PRINTF_DEBUG
+#ifdef PRINTF_DEBUG
+#define DEBUGHERE cerr << __FUNCTION__ << " (" << __FILE__ << ":" << __LINE__ << ")" << endl
+#define IMPLEMENT cerr << "Implement (if needed): " <<  __FUNCTION__ << "() in " << __FILE__ << ":" << __LINE__ << endl
+#define FIXME(feature) cerr << "FIXME: " << feature << __FILE__ << ":" << __LINE__ << " [" << __FUNCTION__ << "]" << endl
+#define ADD_FEATURE(feature) cerr << "TODO: " << feature << __FILE__ << ":" << __LINE__ << " [" << __FUNCTION__ << "]" << endl
+#define DEBUG(msg) cerr << __FUNCTION__ << "(): " << msg << endl
+#else
+#define DEBUGHERE // Do nothing if PRINTF_DEBUG isn't defined
+#define IMPLEMENT
+#define FIXME(feature)
+#define ADD_FEATURE(feature)
+#define DEBUG(msg)
+#endif
 
 STI_Device_Adapter_Pub::STI_Device_Adapter_Pub(ORBManagerPy& orb, std::string DeviceName, std::string IPAddress, unsigned short ModuleNumber)
 	: STI_Device_Adapter(orb.orb_manager, DeviceName, IPAddress, ModuleNumber)
@@ -105,23 +119,17 @@ bool STI_Device_Adapter_Pub::readChannel(unsigned short channel, const MixedValu
 
 	bool success = readChannel_py2(channel, inObj, outVal);
 	
-	std::cout << "after readChannel_py2(" << std::endl;
-
-	std::cout << "readChannel_py: " << outVal.getNumber() << std::endl;
-
-//	std::cout << "readChannel_py: " << boost::python::extract<std::string>(boost::python::str(outObj))() << std::endl;
 	
-//	std::cout << "static_cast: " << static_cast<MixedValue>(outVal).getString() << std::endl;
-
-//	MixedValue v = static_cast<MixedValue>(outVal);
-	std::cout << "after static_cast" << std::endl;
 	MixedValue* v2 = &outVal;
 
-	std::cout << "MixedValue: " << v2->print() << std::endl;
+	
 
-	//TODO: This should work, but MixedData doesn't know how to convert from MixedValue.
-	//Aside: WHY are there MixedValue and MixedData!! Merge...
-	//dataOut.setValue(*v2);
+	/*
+	 * TODO: This should work, but MixedData doesn't know how to convert
+	 * from MixedValue.
+	 * Aside: WHY are there MixedValue and MixedData!! Merge...
+	 * dataOut.setValue(*v2)
+	 */
 	
 	setMixedData_tmp(v2, dataOut);	//temp hack
 	
@@ -134,6 +142,7 @@ bool STI_Device_Adapter_Pub::readChannel(unsigned short channel, const MixedValu
 	return success;
 }
 
+// Whoa nelly, using screen realestate like it's goin' out of style.
 bool STI_Device_Adapter_Pub::readChannel_py(unsigned short channel, const boost::python::object& valueIn, boost::python::object& dataOut)
 {
 	std::cout << "(4) readChannel_py" << std::endl;
@@ -212,7 +221,7 @@ void STI_Device_Adapter_Pub::convertRawEventMap(const RawEventMap& eventsIn, boo
 }
 
 
-void STI_Device_Adapter_Pub::parseDeviceEvents(const RawEventMap& eventsIn, SynchronousEventVector& eventsOut)
+void STI_Device_Adapter_Pub::parseDeviceEvents(const RawEventMap& eventsIn, SynchronousEventVector& eventsOut) throw(std::exception)
 {
 	//also see:  https://stackoverflow.com/questions/6157409/stdvector-to-boostpythonlist
 	

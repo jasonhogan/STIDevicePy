@@ -1,4 +1,5 @@
-﻿import STIPy
+#!/usr/bin/env python2.7 
+import STIPy
 import collections
 
 orb = STIPy.ORBManager()
@@ -43,7 +44,7 @@ class TestDevice(STIPy.STI_Device):
         self.addInputChannel(3, STIPy.TData.DataVector)
         # self.addInputChannel(3, STIPy.TData.DataVector, STIPy.TValue.ValueVector)   # Not working; can't use vector value currently...
 
-        return
+        return 
         
     def defineAttributes(self):
         self.addAttribute("x",7)
