@@ -115,16 +115,17 @@ bool STI_Device_Adapter_Pub::readChannel(unsigned short channel, const MixedValu
 
 //	MixedValue v = static_cast<MixedValue>(outVal);
 	std::cout << "after static_cast" << std::endl;
-	MixedValue* v2 = &outVal;
 
-	std::cout << "MixedValue: " << v2->print() << std::endl;
+	//MixedValue* v2 = &outVal;
+	//std::cout << "MixedValue: " << v2->print() << std::endl;
 
 	//TODO: This should work, but MixedData doesn't know how to convert from MixedValue.
 	//Aside: WHY are there MixedValue and MixedData!! Merge...
 	//dataOut.setValue(*v2);
 	
-	setMixedData_tmp(v2, dataOut);	//temp hack
-	
+	//setMixedData_tmp(v2, dataOut);	//temp hack
+	setMixedData_tmp(&outVal, dataOut);	//temp hack
+
 	//dataOut.setValue(outVal.getString());
 	std::cout << "after setvalue" << std::endl;
 
@@ -155,6 +156,7 @@ bool STI_Device_Adapter_Pub::readChannel_py2(unsigned short channel, const boost
 
 void STI_Device_Adapter_Pub::definePartnerDevices()
 {
+	std::cout << "(4) definePartnerDevices" << std::endl;
 	return STI_Device_Adapter::definePartnerDevices();
 }
 
@@ -344,4 +346,12 @@ void STI_Device_Adapter_Pub::addInputChannel_3(unsigned short Channel, TData Inp
 bool STI_Device_Adapter_Pub::addPartnerDevice(std::string partnerName, std::string IP, short module, std::string deviceName)
 {
 	return STI_Device_Adapter::addPartnerDevice(partnerName, IP, module, deviceName);
+}
+
+PartnerDevicePy STI_Device_Adapter_Pub::partnerDevice(std::string partnerName)
+//int STI_Device_Adapter_Pub::partnerDevice(std::string partnerName)
+{
+	std::cout << "STI_Device_Adapter_Pub::partnerDevice" << std::endl;
+//	return 35;
+	return PartnerDevicePy(STI_Device_Adapter::partnerDevice(partnerName));
 }

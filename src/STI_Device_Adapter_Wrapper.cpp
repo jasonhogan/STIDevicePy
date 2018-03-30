@@ -153,12 +153,18 @@ bool STI_Device_Adapter_Wrapper::default_readChannel_py2(
 
 void STI_Device_Adapter_Wrapper::definePartnerDevices()
 {
+	std::cout << "(1) definePartnerDevices" << std::endl;
+
 	//STI library calls this if there is a python override
 	if (boost::python::override definePartnerDevices = this->get_override("definePartnerDevices"))
 	{
+		std::cout << "(2) definePartnerDevices" << std::endl;
 		definePartnerDevices(); // calls python override (implemented by user-defined python derived class)
+		std::cout << "(2) definePartnerDevices finished" << std::endl;
 		return;
 	}
+	std::cout << "(3) definePartnerDevices" << std::endl;
+
 	return STI_Device_Adapter_Pub::definePartnerDevices();
 }
 

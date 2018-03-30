@@ -28,6 +28,21 @@ class SimpleDevice(STIPy.STI_Device):
         STIPy.STI_Device.__init__(self, orb, name, ip, module)
         return
 
+class TestPartnerDevice(STIPy.STI_Device):
+    def __init__(self, orb, name, ip, module):
+        STIPy.STI_Device.__init__(self, orb, name, ip, module)
+        return
+    def defineChannels(self):
+        self.addInputChannel(0, STIPy.TData.DataDouble)
+        return    
+    def readChannel(self, channel, valueIn, dataOut):
+        #print("in partner")
+        print("in partner: " + str(channel) + " value: " + str(valueIn))
+        #dataOut.setValue("hello from read channel")
+        dataOut.setValue(4*valueIn)
+        #dataOut.setValue([2,4,valueIn])
+        return True
+
 class TestDevice(STIPy.STI_Device):
     def __init__(self, orb, name, ip, module):
         STIPy.STI_Device.__init__(self, orb, name, ip, module)
@@ -42,9 +57,13 @@ class TestDevice(STIPy.STI_Device):
         # self.addInputChannel(3, STIPy.TData.DataString)
         self.addInputChannel(3, STIPy.TData.DataVector)
         # self.addInputChannel(3, STIPy.TData.DataVector, STIPy.TValue.ValueVector)   # Not working; can't use vector value currently...
+        self.addInputChannel(4, STIPy.TData.DataDouble)
 
         return
-        
+    def definePartnerDevices(self):
+        print("python: definePartnerDevices")
+        self.addPartnerDevice("multipler", "localhost", 2, "Test Partner Device")
+        return
     def defineAttributes(self):
         self.addAttribute("x",7)
         self.addAttribute("Y","hello","hello, goodbye, why")
@@ -56,9 +75,9 @@ class TestDevice(STIPy.STI_Device):
             self.x = int(value)
         return True
     def refreshAttributes(self):
-        # Gets called in order to refresh the values of any attributes that are
-        # determined by the Device object's state.  If the Device's state changes,
-        # its attributes may need to be refreshed using newly available data.
+        # Gets called in order to refresh the values of any attributes (i.e, shown in the Console) 
+        # that are determined by the Device object's state.  If the Device's state changes,
+        # its attributes may need to be refreshed using the newly available data.
         # For example, this is called after each updateAttribute call, since there
         # could be interdependent attributes.
         if(self.x == 9) :
@@ -69,13 +88,44 @@ class TestDevice(STIPy.STI_Device):
         return "exe!"
     def writeChannel(self, channel, value):
         print("ch: " + str(channel) + " value: " + str(value))
+        if(channel == 1):
+            self.partnerDevice("multipler").write(2, value)
+            #tmp = self.partnerDevice("multipler").read(2, value)
+            print("read2: " + str(tmp))
         return True
     def readChannel(self, channel, valueIn, dataOut):
-        print("in python")
+        print("in python" + str(channel))
         #print("ch: " + str(channel) + " value: " + str(valueIn))
         #dataOut.setValue("hello from read channel")
         #dataOut.setValue(3*valueIn)
-        dataOut.setValue([2,4,valueIn])
+        if(channel == 3) :
+            dataOut.setValue([2,4,valueIn])
+                
+        if(channel == 4) :
+            print("In channel==4: "+str(valueIn))
+            #mvIn = STIPy.MixedValue()
+            #mvIn.setValue(valueIn)
+            #mvOut = STIPy.MixedValue()
+
+            ##This works:
+            #partner=self.partnerDevice("multipler")
+            #partner.read(0, valueIn, dataOut)
+
+            ##This works:
+            self.partnerDevice("multipler").read(0, valueIn, dataOut)
+
+            ##This works:
+            #mvOut = STIPy.MixedValue()
+            #self.partnerDevice("multipler").read(0, valueIn, mvOut)
+            #dataOut.setValue(mvOut.getValue())  #this works
+            #dataOut.setValue(mvOut)    #this works too
+
+            ##This works:
+            #tmp = self.partnerDevice("multipler").read(0, valueIn)
+            #print("read2: " + str(tmp))
+            #dataOut.setValue(tmp)
+
+
         return True
     def getDeviceHelp(self):
         return "python help!"
@@ -110,7 +160,13 @@ class TestDevice(STIPy.STI_Device):
 ##########
 
 #simpDev = SimpleDevice(orb,"Simple", "localhost", 0)
+
+
 dev = TestDevice(orb, "Test Device", "localhost", 256)
+
+#orb2 = orb
+#dev2 = TestPartnerDevice(orb2, "Test Partner Device", "localhost", 2)
+
 
 #dev.setAttribute("a", "b")
 

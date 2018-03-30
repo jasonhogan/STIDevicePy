@@ -9,6 +9,8 @@ Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "pythonTest", "..\pythonTest
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "STIPy", "..\STIPy\STIPy.vcxproj", "{9B837607-9751-4D3F-AACB-9A7BDF8F350B}"
 EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "pythonTest2", "..\pythonTest\pythonTest2.pyproj", "{0F4E12AB-0E6B-4675-833C-F950520AF05F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,12 @@ Global
 		{9B837607-9751-4D3F-AACB-9A7BDF8F350B}.Release|x64.Build.0 = Release|x64
 		{9B837607-9751-4D3F-AACB-9A7BDF8F350B}.Release|x86.ActiveCfg = Release|Win32
 		{9B837607-9751-4D3F-AACB-9A7BDF8F350B}.Release|x86.Build.0 = Release|Win32
+		{0F4E12AB-0E6B-4675-833C-F950520AF05F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F4E12AB-0E6B-4675-833C-F950520AF05F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0F4E12AB-0E6B-4675-833C-F950520AF05F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0F4E12AB-0E6B-4675-833C-F950520AF05F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F4E12AB-0E6B-4675-833C-F950520AF05F}.Release|x64.ActiveCfg = Release|Any CPU
+		{0F4E12AB-0E6B-4675-833C-F950520AF05F}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

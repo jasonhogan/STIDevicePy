@@ -10,6 +10,7 @@
 
 #include "MixedValuePy.h"
 #include "RawEventPy.h"
+#include "PartnerDevicePy.h"
 
 #include <Attribute.h>
 
@@ -17,6 +18,8 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(addOutputChannel_member_overloads, addOut
 //BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(addInputChannel_1_member_overloads, addInputChannel_1, 2, 3)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(addInputChannel_3_member_overloads, addInputChannel_3, 3, 4)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(addAttribute_member_overloads, addAttribute, 2, 3)
+
+//BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(setValue_member_overloads, setValue, 2, 2)
 
 
 BOOST_PYTHON_MODULE(STIPy)
@@ -36,7 +39,8 @@ BOOST_PYTHON_MODULE(STIPy)
 	class_<MixedValuePy>("MixedValue", "Mixed value class.", init<>("__init__ docstring") )
 		.def(init<const boost::python::object&>())
 		.def("getValue", &MixedValuePy::getValue)
-		.def("setValue", &MixedValuePy::setValue)
+		.def("setValue", &MixedValuePy::setValue_py)
+		.def("setValue", &MixedValuePy::setValue_py2)
 		.def("addValue", &MixedValuePy::addValue)
 		.def("clear", &MixedValuePy::clear)
 		.def("print", &MixedValuePy::print)
@@ -48,6 +52,12 @@ BOOST_PYTHON_MODULE(STIPy)
 		.def("value", &RawEventPy::value)
 		;
 
+	class_<PartnerDevicePy>("PartnerDevice")
+		.def("read", &PartnerDevicePy::read_py)
+		.def("read", &PartnerDevicePy::read_py2)
+		.def("write", &PartnerDevicePy::write)
+//		.def("execute", &PartnerDevicePy::execute)
+		;
 
 //	class_<SynchronousEventAdapterPy, std::unique_ptr<SynchronousEventAdapterPy>>("SynchronousEvent", "STI event class.",
 //	class_<SynchronousEventAdapterPy, boost::noncopyable>("SynchronousEvent", "STI event class.",
@@ -127,6 +137,10 @@ BOOST_PYTHON_MODULE(STIPy)
 		.def("addPartnerDevice", &STI_Device_Adapter_Pub::addPartnerDevice,
 			boost::python::args("self", "partnerAlias", "deviceIP", "devicemodule", "deviceName"),
 			"addPartnerDevice docstring"
+			)
+		.def("partnerDevice", &STI_Device_Adapter_Pub::partnerDevice, 
+			boost::python::args("self", "partnerAlias"),
+			"parternDevice docstring"
 			)
 		;
 	

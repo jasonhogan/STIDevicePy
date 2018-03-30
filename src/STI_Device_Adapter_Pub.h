@@ -7,6 +7,7 @@
 #include "ORBManagerPy.h"
 
 #include "MixedValuePy.h"
+#include "PartnerDevicePy.h"
 
 #include <string>
 
@@ -66,6 +67,10 @@ public:
 	bool setAttribute(std::string key, boost::python::object value);
 
 	bool addPartnerDevice(std::string partnerName, std::string IP, short module, std::string deviceName);
+
+	PartnerDevicePy partnerDevice(std::string partnerName);
+//	int partnerDevice(std::string partnerName);
+
 
 	static void convertRawEventMap(const RawEventMap& eventsIn, boost::python::dict& eventsInPy);
 	static void convertRawEventMap(const RawEventMap& eventsIn, boost::python::list& eventsInPy);

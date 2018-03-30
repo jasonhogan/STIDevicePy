@@ -147,6 +147,7 @@
   <ItemGroup>
     <ClCompile Include="..\src\MixedValuePy.cpp" />
     <ClCompile Include="..\src\ORBManagerPy.cpp" />
+    <ClCompile Include="..\src\PartnerDevicePy.cpp" />
     <ClCompile Include="..\src\RawEventPy.cpp" />
     <ClCompile Include="..\src\STIDevicePy.cpp" />
     <ClCompile Include="..\src\STI_Device_Adapter_Pub.cpp" />
@@ -157,6 +158,7 @@
   <ItemGroup>
     <ClInclude Include="..\src\MixedValuePy.h" />
     <ClInclude Include="..\src\ORBManagerPy.h" />
+    <ClInclude Include="..\src\PartnerDevicePy.h" />
     <ClInclude Include="..\src\RawEventPy.h" />
     <ClInclude Include="..\src\STI_Device_Adapter_Pub.h" />
     <ClInclude Include="..\src\STI_Device_Adapter_Wrapper.h" />
