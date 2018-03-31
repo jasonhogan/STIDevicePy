@@ -45,8 +45,18 @@ void STI_Device_Adapter_Pub::defineChannels()
 bool STI_Device_Adapter_Pub::writeChannel(unsigned short channel, const MixedValue& value)
 {
 	std::cout << "(3) writeChannel_py" << std::endl;
-	boost::python::object obj(value.getDouble());
-	return writeChannel_py(channel, obj);
+//	boost::python::object obj(value.getDouble());
+	
+	MixedValuePy valuleInPy(value);
+	boost::python::object inObj(valuleInPy.getValue());
+
+
+	bool success =  writeChannel_py(channel, inObj);
+
+	std::cout << "(3) writeChannel_py RETURNED" << std::endl;
+
+
+	return success;
 //	return writeChannel_py(channel, value.getDouble());
 }
 

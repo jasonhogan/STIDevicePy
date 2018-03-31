@@ -88,7 +88,10 @@ bool STI_Device_Adapter_Wrapper::writeChannel_py(unsigned short channel, const b
 	if (boost::python::override writeChannel_py = this->get_override("writeChannel"))
 	{
 		std::cout << "(1) writeChannel_py" << std::endl;
-		return writeChannel_py(channel, value); // calls python override (implemented by user-defined python derived class)
+		bool success = writeChannel_py(channel, value); // calls python override (implemented by user-defined python derived class)
+		std::cout << "(1) writeChannel_py RETURNED" << std::endl;
+
+		return success;
 	}
 	std::cout << "(2) writeChannel_py" << std::endl;
 	return STI_Device_Adapter_Pub::writeChannel_py(channel, value);

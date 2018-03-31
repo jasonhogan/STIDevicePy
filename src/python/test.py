@@ -52,7 +52,7 @@ class TestDevice(STIPy.STI_Device):
         print ("define channels...........5.........................................")
         self.addOutputChannel(0,STIPy.TValue.ValueNumber,"out")
         self.addOutputChannel(1,STIPy.TValue.ValueString,"out2")
-        self.addOutputChannel(2, STIPy.TValue.ValueString)
+        self.addInputChannel(2, STIPy.TData.DataString,STIPy.TValue.ValueString)
         # self.addInputChannel(3, STIPy.TData.DataDouble)
         # self.addInputChannel(3, STIPy.TData.DataString)
         self.addInputChannel(3, STIPy.TData.DataVector)
@@ -89,9 +89,12 @@ class TestDevice(STIPy.STI_Device):
     def writeChannel(self, channel, value):
         print("ch: " + str(channel) + " value: " + str(value))
         if(channel == 1):
-            self.partnerDevice("multipler").write(2, value)
+            #self.partnerDevice("multipler").write(2, value.getValue())
             #tmp = self.partnerDevice("multipler").read(2, value)
-            print("read2: " + str(tmp))
+            partner=self.partnerDevice("multipler")
+            #partner.write(1, value) #works
+            temp = partner.read(1, value)
+            print("read2: " + str(temp))
         return True
     def readChannel(self, channel, valueIn, dataOut):
         print("in python" + str(channel))
@@ -100,7 +103,10 @@ class TestDevice(STIPy.STI_Device):
         #dataOut.setValue(3*valueIn)
         if(channel == 3) :
             dataOut.setValue([2,4,valueIn])
-                
+        if (channel==2):
+            partner=self.partnerDevice("multipler")
+            partner.read(1, valueIn, dataOut)
+            #self.partnerDevice("multipler").read(1, valueIn, dataOut)        
         if(channel == 4) :
             print("In channel==4: "+str(valueIn))
             #mvIn = STIPy.MixedValue()

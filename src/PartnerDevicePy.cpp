@@ -79,7 +79,10 @@ bool PartnerDevicePy::write(unsigned short channel, const boost::python::object&
 	//return partnerDeviceRef->write(channel, value);
 
 	MixedValuePy valuleInPy(value);
-	return partnerDeviceRef->write(channel, static_cast<const MixedValue&>(valuleInPy));
+	std::cout << "PartnerDevicePy::write: " << valuleInPy.print() << std::endl;
+	bool success = partnerDeviceRef->write(channel, valuleInPy);
+	std::cout << "... success? " << success << std::endl;
+	return success;
 }
 
 std::string PartnerDevicePy::execute(const std::string& args)

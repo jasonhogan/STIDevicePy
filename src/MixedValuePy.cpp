@@ -21,6 +21,11 @@ MixedValuePy::MixedValuePy(const boost::python::object& value)
 void MixedValuePy::setValue_py(const boost::python::object& value)
 {
 //	std::string str = boost::python::extract<std::string>(boost::python::str(value))();
+	
+	std::cout << "MixedValuePy::setValue_py(" << boost::python::extract<std::string>(boost::python::str(value))() << std::endl;
+
+//	if (setValueExtract<std::string>(value)) return;
+
 
 	//The order of these is important, since it trys to convert.
 	if (setValueExtract<double>(value)) return;
