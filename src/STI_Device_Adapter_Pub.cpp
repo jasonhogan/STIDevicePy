@@ -38,36 +38,22 @@ bool STI_Device_Adapter_Pub::updateAttribute(std::string key, std::string value)
 //STI calls this function if there is no python override:
 void STI_Device_Adapter_Pub::defineChannels()
 { 
-	std::cout << ".......1......." << std::endl;
 	return STI_Device_Adapter::defineChannels();
-} //{ return STI_Device_Adapter::defineChannels(); }
+}
 
 bool STI_Device_Adapter_Pub::writeChannel(unsigned short channel, const MixedValue& value)
 {
-	std::cout << "(3) writeChannel_py" << std::endl;
-//	boost::python::object obj(value.getDouble());
-	
 	MixedValuePy valuleInPy(value);
-	boost::python::object inObj(valuleInPy.getValue());
+	boost::python::object obj(valuleInPy.getValue());
 
-
-	bool success =  writeChannel_py(channel, inObj);
-
-	std::cout << "(3) writeChannel_py RETURNED" << std::endl;
-
+	bool success =  writeChannel_py(channel, obj);
 
 	return success;
-//	return writeChannel_py(channel, value.getDouble());
 }
 
 bool STI_Device_Adapter_Pub::writeChannel_py(unsigned short channel, const boost::python::object& value)
-//bool STI_Device_Adapter_Pub::writeChannel_py(unsigned short channel, double value)
 {
-	std::cout << "(4) writeChannel_py" << std::endl;
 	return false;
-	//MixedValue mVal;
-	//mVal.setValue( boost::python::extract<std::string>(boost::python::str(value))() );
-	//return STI_Device_Adapter::writeChannel(channel, mVal);
 }
 
 bool STI_Device_Adapter_Pub::setMixedData_tmp(const MixedValue* valueIn, MixedData& dataOut)
@@ -102,33 +88,13 @@ bool STI_Device_Adapter_Pub::setMixedData_tmp(const MixedValue* valueIn, MixedDa
 
 bool STI_Device_Adapter_Pub::readChannel(unsigned short channel, const MixedValue& valueIn, MixedData& dataOut)
 {
-	std::cout << "(3) readChannel_py" << std::endl;
-
 	MixedValuePy valuleInPy(valueIn);
 	boost::python::object inObj(valuleInPy.getValue());
-//	boost::python::object inObj(valueIn.getDouble());
-
-	boost::python::object outObj;
 
 	MixedValuePy outVal;
-	std::cout << "after MixedValuePy constructor" << std::endl;
 
 	bool success = readChannel_py2(channel, inObj, outVal);
-	
-	std::cout << "after readChannel_py2(" << std::endl;
-
-	std::cout << "readChannel_py: " << outVal.getNumber() << std::endl;
-
-//	std::cout << "readChannel_py: " << boost::python::extract<std::string>(boost::python::str(outObj))() << std::endl;
-	
-//	std::cout << "static_cast: " << static_cast<MixedValue>(outVal).getString() << std::endl;
-
-//	MixedValue v = static_cast<MixedValue>(outVal);
-	std::cout << "after static_cast" << std::endl;
-
-	//MixedValue* v2 = &outVal;
-	//std::cout << "MixedValue: " << v2->print() << std::endl;
-
+		
 	//TODO: This should work, but MixedData doesn't know how to convert from MixedValue.
 	//Aside: WHY are there MixedValue and MixedData!! Merge...
 	//dataOut.setValue(*v2);
@@ -136,37 +102,22 @@ bool STI_Device_Adapter_Pub::readChannel(unsigned short channel, const MixedValu
 	//setMixedData_tmp(v2, dataOut);	//temp hack
 	setMixedData_tmp(&outVal, dataOut);	//temp hack
 
-	//dataOut.setValue(outVal.getString());
-	std::cout << "after setvalue" << std::endl;
-
-	std::cout << "dataOut = " << dataOut.print() << std::endl;
-
-//	dataOut.setValue(outVal.getString());
 	return success;
 }
 
 bool STI_Device_Adapter_Pub::readChannel_py(unsigned short channel, const boost::python::object& valueIn, boost::python::object& dataOut)
 {
-	std::cout << "(4) readChannel_py" << std::endl;
 	return false;
-	//MixedValue mVal;
-	//mVal.setValue( boost::python::extract<std::string>(boost::python::str(value))() );
-	//return STI_Device_Adapter::writeChannel(channel, mVal);
 }
 
 bool STI_Device_Adapter_Pub::readChannel_py2(unsigned short channel, const boost::python::object& valueIn, MixedValuePy& dataOut)
 {
-	std::cout << "(5) readChannel_py" << std::endl;
 	return false;
-
 }
-
-
 
 
 void STI_Device_Adapter_Pub::definePartnerDevices()
 {
-	std::cout << "(4) definePartnerDevices" << std::endl;
 	return STI_Device_Adapter::definePartnerDevices();
 }
 
@@ -223,7 +174,6 @@ void STI_Device_Adapter_Pub::convertRawEventMap(const RawEventMap& eventsIn, boo
 	}
 }
 
-
 void STI_Device_Adapter_Pub::parseDeviceEvents(const RawEventMap& eventsIn, SynchronousEventVector& eventsOut)
 {
 	//also see:  https://stackoverflow.com/questions/6157409/stdvector-to-boostpythonlist
@@ -234,9 +184,7 @@ void STI_Device_Adapter_Pub::parseDeviceEvents(const RawEventMap& eventsIn, Sync
 	// Also note this, for "GC Object already tracked" crash:
 	// https://stackoverflow.com/questions/23178606/debugging-python-fatal-error-gc-object-already-tracked
 
-	std::cout << "(3) parseDeviceEvents" << std::endl;
-	
-	//Python dict is unordered.  Not the right structure. Should probably convert to:
+	// Python dict is unordered.  Not the right structure. Should probably convert to:
 	// list [ tuple(time, list [events ...]), tuple(...), ... ]
 
 	//Convert:  eventsIn --> eventsInPy
@@ -261,8 +209,6 @@ void STI_Device_Adapter_Pub::parseDeviceEvents(const RawEventMap& eventsIn, Sync
 
 	parseDeviceEvents_py(eventsInPy, eventsOutPy);	//call to python implementation
 	
-	std::cout << "length: " << len(eventsOutPy) << std::endl;
-
 	//Convert:  eventsOutPy --> eventsOut
 	for (int i = 0; i < len(eventsOutPy); ++i)
 	{
@@ -275,30 +221,18 @@ void STI_Device_Adapter_Pub::parseDeviceEvents(const RawEventMap& eventsIn, Sync
 			std::cout << "It's a trap!" << std::endl;
 		}
 		std::auto_ptr<SynchronousEventAdapterPy>& evt_ptr = extract_evt();
-		
-		//evt_ptr->setupEvent();
-		
-		std::cout << "In loop: " << i << " t=" << evt_ptr->getTime() << std::endl;
-		//PyObject* evtA = eventsOutPy[i]().ptr();
-		std::cout << "Got pointer" << std::endl;
-		
+				
 		evt_ptr.get()->addRef(obj.ptr());		//ptr() returns PyObject* of the event created in python.
+												//addRef avoids python GC releasing event object reference
 
-		//evt_ptr.get()->addRef(eventsOutPy[i]().ptr());		//ptr() returns PyObject* of the event created in python.
-		std::cout << "A" << std::endl;
-		eventsOut.push_back(evt_ptr.get());					//eventsOut is boost::ptr_vector (takes ownership).
-		std::cout << "B" << std::endl;
-		evt_ptr.release();									//Make the auto_ptr give up ownership so it doesn't call delete.
-		std::cout << "C" << std::endl;
+		eventsOut.push_back(evt_ptr.get());		//eventsOut is boost::ptr_vector (takes ownership).
+		evt_ptr.release();						//Make the auto_ptr give up ownership so it doesn't call delete.
 	}
 }
 
-
 void STI_Device_Adapter_Pub::parseDeviceEvents_py(const boost::python::list& eventsIn, boost::python::list& eventsOut)
 {
-	std::cout << "(5) parseDeviceEvents_py" << std::endl;
 }
-
 
 void STI_Device_Adapter_Pub::stopEventPlayback()
 {
@@ -359,9 +293,6 @@ bool STI_Device_Adapter_Pub::addPartnerDevice(std::string partnerName, std::stri
 }
 
 PartnerDevicePy STI_Device_Adapter_Pub::partnerDevice(std::string partnerName)
-//int STI_Device_Adapter_Pub::partnerDevice(std::string partnerName)
 {
-	std::cout << "STI_Device_Adapter_Pub::partnerDevice" << std::endl;
-//	return 35;
 	return PartnerDevicePy(STI_Device_Adapter::partnerDevice(partnerName));
 }

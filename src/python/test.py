@@ -49,7 +49,7 @@ class TestDevice(STIPy.STI_Device):
         return
         
     def defineChannels(self):
-        print ("define channels...........5.........................................")
+        #print ("define channels...........5.........................................")
         self.addOutputChannel(0,STIPy.TValue.ValueNumber,"out")
         self.addOutputChannel(1,STIPy.TValue.ValueString,"out2")
         self.addInputChannel(2, STIPy.TData.DataString,STIPy.TValue.ValueString)
@@ -61,7 +61,7 @@ class TestDevice(STIPy.STI_Device):
 
         return
     def definePartnerDevices(self):
-        print("python: definePartnerDevices")
+        #print("python: definePartnerDevices")
         self.addPartnerDevice("multipler", "localhost", 2, "Test Partner Device")
         return
     def defineAttributes(self):
@@ -167,7 +167,6 @@ class TestDevice(STIPy.STI_Device):
 
 #simpDev = SimpleDevice(orb,"Simple", "localhost", 0)
 
-
 dev = TestDevice(orb, "Test Device", "localhost", 256)
 
 #orb2 = orb
@@ -176,13 +175,11 @@ dev = TestDevice(orb, "Test Device", "localhost", 256)
 
 #dev.setAttribute("a", "b")
 
-mv = STIPy.MixedValue()
-mv.setValue("hello")
+#mv = STIPy.MixedValue()
+#mv.setValue("hello")
 
-print(STIPy.TValue.ValueNumber.name)
-
-print (STIPy.STI_Device.__doc__)
-
+#print(STIPy.TValue.ValueNumber.name)
+#print (STIPy.STI_Device.__doc__)
 
 
 orb.run()

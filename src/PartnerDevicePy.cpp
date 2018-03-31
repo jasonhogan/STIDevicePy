@@ -17,36 +17,25 @@ PartnerDevicePy::PartnerDevicePy(PartnerDevice& partnerDevice) : partnerDeviceRe
 //bool PartnerDevicePy::read_py(unsigned short channel, const boost::python::object& valueIn, boost::python::object& dataOut)
 bool PartnerDevicePy::read_py(unsigned short channel, const boost::python::object& valueIn, MixedValuePy& dataOut)
 {
-	std::cout << "PartnerDevicePy::read_py" << std::endl;
-	//convert
+	if (partnerDeviceRef == 0)
+		return false;
+
 	MixedValuePy valuleInPy(valueIn);
-	//boost::python::object inObj(valuleInPy.getValue());
-	
 	MixedData data;
 
-	partnerDeviceRef->read(channel, valuleInPy, data);
+	bool success = partnerDeviceRef->read(channel, valuleInPy, data);
 
-//	MixedValuePy dataVal;
-//	dataVal.setValue(data);
-//	dataOut = dataVal.getValue();
-
-	std::cout << "PartnerDevicePy::read_py then read: " << data.print() << std::endl;
-
-	dataOut.setValue(data);
-	//dataOut.setValue(22);
-
-	//dataOut = boost::python::object(3);
-
-	return true;
+	if (success) {
+		dataOut.setValue(data);
+		return true;
+	}
+	return false;
 }
 
 boost::python::object PartnerDevicePy::read_py2(unsigned short channel, const boost::python::object& valueIn)
 {
 	MixedValuePy dataOut;
 
-//	boost::python::object dataObj = MixedValuePy::convertValue(dataOut);
-//	return dataObj;
-	
 	if (read_py(channel, valueIn, dataOut)) {
 		return MixedValuePy::convertValue(dataOut);
 	}
@@ -73,15 +62,11 @@ boost::python::object PartnerDevicePy::read_py2(unsigned short channel, const bo
 
 bool PartnerDevicePy::write(unsigned short channel, const boost::python::object& value)
 {
-	//if (partnerDeviceRef == 0)
-	//	return false;
-
-	//return partnerDeviceRef->write(channel, value);
+	if (partnerDeviceRef == 0)
+		return false;
 
 	MixedValuePy valuleInPy(value);
-	std::cout << "PartnerDevicePy::write: " << valuleInPy.print() << std::endl;
 	bool success = partnerDeviceRef->write(channel, valuleInPy);
-	std::cout << "... success? " << success << std::endl;
 	return success;
 }
 

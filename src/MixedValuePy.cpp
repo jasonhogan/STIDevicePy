@@ -20,14 +20,9 @@ MixedValuePy::MixedValuePy(const boost::python::object& value)
 
 void MixedValuePy::setValue_py(const boost::python::object& value)
 {
-//	std::string str = boost::python::extract<std::string>(boost::python::str(value))();
-	
-	std::cout << "MixedValuePy::setValue_py(" << boost::python::extract<std::string>(boost::python::str(value))() << std::endl;
+//	std::cout << "MixedValuePy::setValue_py(" << boost::python::extract<std::string>(boost::python::str(value))() << std::endl;
 
-//	if (setValueExtract<std::string>(value)) return;
-
-
-	//The order of these is important, since it trys to convert.
+	//The order of these is important, since it trys to convert to the specified type.
 	if (setValueExtract<double>(value)) return;
 	if (setValueExtract<int>(value)) return;
 	if (setValueExtract<std::string>(value)) return;
@@ -43,7 +38,6 @@ void MixedValuePy::setValue_py(const boost::python::object& value)
 
 void MixedValuePy::setValue_py2(const MixedValuePy& value)
 {
-	std::cout << "MixedValuePy::setValue_py2 " << value.print() << std::endl;
 	MixedValue::setValue(static_cast<const MixedValue&>(value));
 }
 
@@ -74,10 +68,6 @@ void MixedValuePy::clear()
 
 boost::python::object MixedValuePy::getValue() const
 {
-//	using boost::python::object;
-//	object obj = convertValue(*this);
-//	return obj;
-
 	return convertValue(*this);
 }
 
@@ -129,8 +119,6 @@ std::string MixedValuePy::print() const
 
 void MixedValuePy::setValue(const MixedData& data)
 {
-	//MixedValue& value = *this;
-	//convert(data, value);
 	convert(data, *this);
 }
 
@@ -159,7 +147,6 @@ void MixedValuePy::convert(const MixedData& data, MixedValue& value)
 			convert(d, val);
 			value.addValue(val);
 		}
-
 		break;
 	}
 	case MixedData::Empty:
