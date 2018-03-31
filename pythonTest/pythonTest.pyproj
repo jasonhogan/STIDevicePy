@@ -22,6 +22,12 @@
     <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="simpleDevice.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="STI_Device_Template.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="test.py" />
   </ItemGroup>
   <ItemGroup>
