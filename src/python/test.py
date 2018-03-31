@@ -170,7 +170,7 @@ class TestDevice(STIPy.STI_Device):
 dev = TestDevice(orb, "Test Device", "localhost", 256)
 
 #orb2 = orb
-#dev2 = TestPartnerDevice(orb2, "Test Partner Device", "localhost", 2)
+dev2 = TestPartnerDevice(orb, "Test Partner Device", "localhost", 2)
 
 
 #dev.setAttribute("a", "b")

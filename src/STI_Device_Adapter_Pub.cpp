@@ -7,11 +7,13 @@
 #include "SynchronousEventAdapterPy.h"
 
 #include <string>
+#include <memory>
 #include <iostream>
 
 
 STI_Device_Adapter_Pub::STI_Device_Adapter_Pub(ORBManagerPy& orb, std::string DeviceName, std::string IPAddress, unsigned short ModuleNumber)
-	: STI_Device_Adapter(orb.orb_manager, DeviceName, IPAddress, ModuleNumber)
+	: STI_Device_Adapter(orb.orb_manager.get(), DeviceName, IPAddress, ModuleNumber), 
+	orb_manager(orb.orb_manager)	//save a reference so shared_ptr will not delete orb manager durin device lifetime
 {
 }
 

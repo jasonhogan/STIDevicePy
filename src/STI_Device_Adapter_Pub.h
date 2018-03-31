@@ -10,6 +10,7 @@
 #include "PartnerDevicePy.h"
 
 #include <string>
+#include <memory>
 
 //#include "SynchronousEventAdapterPy.h"
 
@@ -76,6 +77,9 @@ public:
 	static void convertRawEventMap(const RawEventMap& eventsIn, boost::python::list& eventsInPy);
 
 	bool setMixedData_tmp(const MixedValue* valueIn, MixedData& dataOut);
+
+
+	std::shared_ptr<ORBManager> orb_manager;
 
 
 	//template<class T>
