@@ -1,6 +1,7 @@
 #!/usr/bin/env python2.7 
 import STIPy
 import collections
+from os import popen as sh
 
 orb = STIPy.ORBManager()
 
@@ -42,6 +43,8 @@ class TestDevice(STIPy.STI_Device):
         # self.addInputChannel(3, STIPy.TData.DataDouble)
         # self.addInputChannel(3, STIPy.TData.DataString)
         self.addInputChannel(3, STIPy.TData.DataVector)
+        print("Defining this channel...")
+        self.addInputChannel(4, STIPy.TData.DataVector,"MassiveSecurityBreach")
         # self.addInputChannel(3, STIPy.TData.DataVector, STIPy.TValue.ValueVector)   # Not working; can't use vector value currently...
 
         return 
@@ -73,6 +76,11 @@ class TestDevice(STIPy.STI_Device):
         return True
     def readChannel(self, channel, valueIn, dataOut):
         print("in python")
+
+        # Run command and output device. EXTREMELY UNSAFE; for testing only!
+        if channel == 4:
+            dataOut.setValue(sh(valueIn).read());
+            return True
         #print("ch: " + str(channel) + " value: " + str(valueIn))
         #dataOut.setValue("hello from read channel")
         #dataOut.setValue(3*valueIn)
@@ -122,7 +130,4 @@ print(STIPy.TValue.ValueNumber.name)
 
 print (STIPy.STI_Device.__doc__)
 
-
-
 orb.run()
-
