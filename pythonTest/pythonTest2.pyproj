@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{0f4e12ab-0e6b-4675-833c-f950520af05f}</ProjectGuid>
     <ProjectHome>..\src\python\</ProjectHome>
-    <StartupFile>test2.py</StartupFile>
+    <StartupFile>thread_mwe.py</StartupFile>
     <SearchPath>..\..\testDLL\Debug\;..\..\project\Debug\</SearchPath>
     <WorkingDirectory>C:\Users\Jason\Code\dev\STIDevicePy\project\Debug</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -14,6 +14,7 @@
     <InterpreterId />
     <InterpreterVersion />
     <IsWindowsApplication>False</IsWindowsApplication>
+    <EnableNativeCodeDebugging>True</EnableNativeCodeDebugging>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
@@ -25,6 +26,7 @@
     <Compile Include="test2.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="thread_mwe.py" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\STIPy\STIPy.vcxproj">

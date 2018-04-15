@@ -1,5 +1,6 @@
 
 #include "ORBManagerPy.h"
+#include "ScopedGILRelease.h"
 
 #include <memory>
 
@@ -14,7 +15,8 @@ ORBManagerPy::ORBManagerPy()
 
 void ORBManagerPy::run() 
 {
-	orb_manager->run();
+	ScopedGILRelease gil;
+	orb_manager->run(false);
 }
 
 void ORBManagerPy::ORBshutdown()

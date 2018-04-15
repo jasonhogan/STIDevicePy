@@ -160,6 +160,7 @@
     <ClInclude Include="..\src\ORBManagerPy.h" />
     <ClInclude Include="..\src\PartnerDevicePy.h" />
     <ClInclude Include="..\src\RawEventPy.h" />
+    <ClInclude Include="..\src\ScopedGILRelease.h" />
     <ClInclude Include="..\src\STI_Device_Adapter_Pub.h" />
     <ClInclude Include="..\src\STI_Device_Adapter_Wrapper.h" />
     <ClInclude Include="..\src\SynchronousEventAdapterPub.h" />

@@ -21,6 +21,8 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(addAttribute_member_overloads, addAttribu
 
 BOOST_PYTHON_MODULE(STIPy)
 {
+	PyEval_InitThreads();
+
 	using namespace boost::python;
 	
 	//Store instances of ORBManagerPy as shared_ptr to avoid deletion by python GC.
@@ -52,7 +54,7 @@ BOOST_PYTHON_MODULE(STIPy)
 		.def("read", &PartnerDevicePy::read_py)
 		.def("read", &PartnerDevicePy::read_py2)
 		.def("write", &PartnerDevicePy::write)
-//		.def("execute", &PartnerDevicePy::execute)
+		.def("execute", &PartnerDevicePy::execute)
 		;
 
 //	class_<SynchronousEventAdapterPy, std::unique_ptr<SynchronousEventAdapterPy>>("SynchronousEvent", "STI event class.",

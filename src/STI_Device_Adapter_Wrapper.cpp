@@ -4,7 +4,7 @@
 #include "STI_Device_Adapter_Wrapper.h"
 #include "STI_Device_Adapter_Pub.h"
 
-
+#include "ScopedGILRelease.h"
 
 #include <string>
 #include <iostream>
@@ -69,6 +69,7 @@ void STI_Device_Adapter_Wrapper::defineChannels()
 	//STI library calls this if there is a python override
 	if (boost::python::override defineChannels = this->get_override("defineChannels"))
 	{
+		AcquireGIL gil;
 		defineChannels(); // calls python override (implemented by user-defined python derived class)
 		return;
 	}
@@ -101,6 +102,8 @@ bool STI_Device_Adapter_Wrapper::readChannel_py(unsigned short channel, const bo
 	//STI library calls this if there is a python override
 	if (boost::python::override readChannel_py = this->get_override("readChannel"))
 	{
+		AcquireGIL gil;
+
 		bool success = readChannel_py(channel, valueIn, dataOut); // calls python override (implemented by user-defined python derived class)
 		//boost::ref(dataOut)
 		//boost::python::ptr<boost::python::object>(dataOut)
@@ -122,6 +125,8 @@ bool STI_Device_Adapter_Wrapper::readChannel_py2(
 	//STI library calls this if there is a python override
 	if (boost::python::override readChannel_py2 = this->get_override("readChannel"))
 	{
+		AcquireGIL gil;
+
 		bool success = readChannel_py2(channel, valueIn,
 			boost::ref(dataOut));	// calls python override (implemented by user-defined python derived class)
 		//	dataOut);
