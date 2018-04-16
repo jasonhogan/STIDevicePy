@@ -5,16 +5,11 @@
 
 void SynchronousEventAdapterPub::setupEvent()
 {
-//	std::cout << "(3) setupEvent" << std::endl;
 	setupEvent_py();
-	//	return writeChannel_py(channel, obj);
-	//	return writeChannel_py(channel, value.getDouble());
 }
 
 void SynchronousEventAdapterPub::setupEvent_py()
 {
-//	std::cout << "(4) setupEvent_py" << std::endl;
-
 	return;
 }
 
@@ -31,7 +26,7 @@ void SynchronousEventAdapterPub::loadEvent_py()
 
 void SynchronousEventAdapterPub::playEvent()
 {
-	std::unique_lock<std::mutex> lock(mtx);
+	std::unique_lock<std::mutex> lock(mtx);	//this did not fix the thread access bug; repeating play rapidly causes a crash.
 	playEvent_py();
 }
 

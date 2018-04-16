@@ -15,14 +15,14 @@ MixedValuePy::MixedValuePy(const MixedValue& value) : MixedValue(value)
 
 MixedValuePy::MixedValuePy(const boost::python::object& value)
 {
-	setValue(value);
+	setValue_py(value);
 }
 
-void MixedValuePy::setValue(const boost::python::object& value)
+void MixedValuePy::setValue_py(const boost::python::object& value)
 {
-//	std::string str = boost::python::extract<std::string>(boost::python::str(value))();
+//	std::cout << "MixedValuePy::setValue_py(" << boost::python::extract<std::string>(boost::python::str(value))() << std::endl;
 
-	//The order of these is important, since it trys to convert.
+	//The order of these is important, since it trys to convert to the specified type.
 	if (setValueExtract<double>(value)) return;
 	if (setValueExtract<int>(value)) return;
 	if (setValueExtract<std::string>(value)) return;
@@ -35,6 +35,12 @@ void MixedValuePy::setValue(const boost::python::object& value)
 		}
 	}
 }
+
+void MixedValuePy::setValue_py2(const MixedValuePy& value)
+{
+	MixedValue::setValue(static_cast<const MixedValue&>(value));
+}
+
 
 void MixedValuePy::addValue(const boost::python::object& value)
 {
@@ -62,11 +68,7 @@ void MixedValuePy::clear()
 
 boost::python::object MixedValuePy::getValue() const
 {
-	using boost::python::object;
-	
-	object obj = convertValue(*this);
-	
-	return obj;
+	return convertValue(*this);
 }
 
 boost::python::object MixedValuePy::convertValue(const MixedValue& value)
@@ -113,4 +115,44 @@ boost::python::object MixedValuePy::convertValue(const MixedValue& value)
 std::string MixedValuePy::print() const
 {
 	return MixedValue::print();
+}
+
+void MixedValuePy::setValue(const MixedData& data)
+{
+	convert(data, *this);
+}
+
+void MixedValuePy::convert(const MixedData& data, MixedValue& value)
+{
+	switch (data.getType())
+	{
+	case MixedData::Boolean:
+		value.setValue(data.getBoolean());
+		break;
+	case MixedData::Int:
+		value.setValue(data.getInt());
+		break;
+	case MixedData::Double:
+		value.setValue(data.getDouble());
+		break;
+	case MixedData::String:
+		value.setValue(data.getString());
+		break;
+	case MixedData::Vector:
+	{
+		const MixedDataVector& vec = data.getVector();
+		MixedValue val;
+
+		for (auto d : vec) {
+			convert(d, val);
+			value.addValue(val);
+		}
+		break;
+	}
+	case MixedData::Empty:
+		value.clear();
+		break;
+	}
+
+//	std::cout << "MixedValuePy::convert:" << data.print() << " --> " << value.print() << std::endl;
 }
