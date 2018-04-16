@@ -1,10 +1,9 @@
 //#define BOOST_PYTHON_STATIC_LIB
 #include <boost/python.hpp>
 
+#include "ScopedGILRelease.h"
 #include "STI_Device_Adapter_Wrapper.h"
 #include "STI_Device_Adapter_Pub.h"
-
-#include "ScopedGILRelease.h"
 
 #include <string>
 #include <iostream>
@@ -21,6 +20,7 @@ void STI_Device_Adapter_Wrapper::defineAttributes()
 	//STI library calls this if there is a python override
 	if (boost::python::override defineAttributes = this->get_override("defineAttributes"))
 	{
+		AcquireGIL gil;		//Aquire the python GIL.
 		defineAttributes(); // calls python override (implemented by user-defined python derived class)
 		return;
 	}
@@ -38,6 +38,7 @@ void STI_Device_Adapter_Wrapper::refreshAttributes()
 	//STI library calls this if there is a python override
 	if (boost::python::override refreshAttributes = this->get_override("refreshAttributes"))
 	{
+		AcquireGIL gil;		//Aquire the python GIL.
 		refreshAttributes(); // calls python override (implemented by user-defined python derived class)
 		return;
 	}
@@ -54,6 +55,7 @@ bool STI_Device_Adapter_Wrapper::updateAttribute(std::string key, std::string va
 	//STI library calls this if there is a python override
 	if (boost::python::override updateAttribute = this->get_override("updateAttribute"))
 	{
+		AcquireGIL gil;		//Aquire the python GIL.
 		return updateAttribute(key, value); // calls python override (implemented by user-defined python derived class)
 	}
 	return STI_Device_Adapter_Pub::updateAttribute(key, value);
@@ -69,7 +71,7 @@ void STI_Device_Adapter_Wrapper::defineChannels()
 	//STI library calls this if there is a python override
 	if (boost::python::override defineChannels = this->get_override("defineChannels"))
 	{
-		AcquireGIL gil;
+		AcquireGIL gil;		//Aquire the python GIL.
 		defineChannels(); // calls python override (implemented by user-defined python derived class)
 		return;
 	}
@@ -86,6 +88,7 @@ bool STI_Device_Adapter_Wrapper::writeChannel_py(unsigned short channel, const b
 	//STI library calls this if there is a python override
 	if (boost::python::override writeChannel_py = this->get_override("writeChannel"))
 	{
+		AcquireGIL gil;		//Aquire the python GIL. Needed to avoid crash!
 		bool success = writeChannel_py(channel, value); // calls python override (implemented by user-defined python derived class)
 		return success;
 	}
@@ -102,7 +105,7 @@ bool STI_Device_Adapter_Wrapper::readChannel_py(unsigned short channel, const bo
 	//STI library calls this if there is a python override
 	if (boost::python::override readChannel_py = this->get_override("readChannel"))
 	{
-		AcquireGIL gil;
+		AcquireGIL gil;		//Aquire the python GIL.
 
 		bool success = readChannel_py(channel, valueIn, dataOut); // calls python override (implemented by user-defined python derived class)
 		//boost::ref(dataOut)
@@ -125,7 +128,7 @@ bool STI_Device_Adapter_Wrapper::readChannel_py2(
 	//STI library calls this if there is a python override
 	if (boost::python::override readChannel_py2 = this->get_override("readChannel"))
 	{
-		AcquireGIL gil;
+		AcquireGIL gil;		//Aquire the python GIL. Needed to avoid crash!
 
 		bool success = readChannel_py2(channel, valueIn,
 			boost::ref(dataOut));	// calls python override (implemented by user-defined python derived class)
@@ -151,6 +154,7 @@ void STI_Device_Adapter_Wrapper::definePartnerDevices()
 	//STI library calls this if there is a python override
 	if (boost::python::override definePartnerDevices = this->get_override("definePartnerDevices"))
 	{
+		AcquireGIL gil;		//Aquire the python GIL.
 		definePartnerDevices(); // calls python override (implemented by user-defined python derived class)
 		return;
 	}
@@ -177,6 +181,7 @@ std::string STI_Device_Adapter_Wrapper::execute(int argc, char* argv[])
 			result.append(*it);
 		}
 
+		AcquireGIL gil;		//Aquire the python GIL.
 		return execute(result); // *note* // call python function
 	}
 	return STI_Device_Adapter_Pub::execute(argc, argv);
@@ -192,6 +197,8 @@ void STI_Device_Adapter_Wrapper::parseDeviceEvents_py(const boost::python::list&
 	//STI library calls this if there is a python override
 	if (boost::python::override parseDeviceEvents_py = this->get_override("parseDeviceEvents"))
 	{
+		AcquireGIL gil;		//Aquire the python GIL.
+							
 		//parseDeviceEvents_py(eventsIn, boost::ref(eventsOut));
 		parseDeviceEvents_py(eventsIn, eventsOut);
 		//	dataOut);
@@ -215,6 +222,7 @@ void STI_Device_Adapter_Wrapper::stopEventPlayback()
 	//STI library calls this if there is a python override
 	if (boost::python::override stopEventPlayback = this->get_override("stopEventPlayback"))
 	{
+		AcquireGIL gil;		//Aquire the python GIL.
 		stopEventPlayback(); // calls python override (implemented by user-defined python derived class)
 		return;
 	}
@@ -231,6 +239,7 @@ void STI_Device_Adapter_Wrapper::pauseEventPlayback()
 	//STI library calls this if there is a python override
 	if (boost::python::override pauseEventPlayback = this->get_override("pauseEventPlayback"))
 	{
+		AcquireGIL gil;		//Aquire the python GIL.
 		pauseEventPlayback(); // calls python override (implemented by user-defined python derived class)
 		return;
 	}
@@ -247,6 +256,7 @@ void STI_Device_Adapter_Wrapper::resumeEventPlayback()
 	//STI library calls this if there is a python override
 	if (boost::python::override resumeEventPlayback = this->get_override("resumeEventPlayback"))
 	{
+		AcquireGIL gil;		//Aquire the python GIL.
 		resumeEventPlayback(); // calls python override (implemented by user-defined python derived class)
 		return;
 	}
@@ -263,6 +273,7 @@ std::string STI_Device_Adapter_Wrapper::getDeviceHelp()
 	//STI library calls this if there is a python override
 	if (boost::python::override getDeviceHelp = this->get_override("getDeviceHelp"))
 	{
+		AcquireGIL gil;		//Aquire the python GIL.
 		return getDeviceHelp(); // calls python override (implemented by user-defined python derived class)
 	}
 	return STI_Device_Adapter_Pub::getDeviceHelp();

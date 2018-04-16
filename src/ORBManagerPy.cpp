@@ -16,7 +16,7 @@ ORBManagerPy::ORBManagerPy()
 void ORBManagerPy::run() 
 {
 	ScopedGILRelease gil;
-	orb_manager->run(false);
+	orb_manager->run();		//true and false both work
 }
 
 void ORBManagerPy::ORBshutdown()

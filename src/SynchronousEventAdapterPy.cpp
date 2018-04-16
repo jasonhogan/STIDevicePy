@@ -1,5 +1,6 @@
 
 #include <boost/python.hpp>
+#include "ScopedGILRelease.h"
 #include "SynchronousEventAdapterPy.h"
 
 
@@ -8,6 +9,7 @@ void SynchronousEventAdapterPy::setupEvent_py()
 	//STI library calls this if there is a python override
 	if (boost::python::override setupEvent_py2 = static_cast<SynchronousEventAdapterPy*>(this)->get_override("setupEvent"))
 	{
+		AcquireGIL gil;		//Aquire the python GIL.
 		setupEvent_py2(); // calls python override (implemented by user-defined python derived class)
 		return;
 	}
@@ -24,6 +26,7 @@ void SynchronousEventAdapterPy::loadEvent_py()
 	//STI library calls this if there is a python override
 	if (boost::python::override loadEvent_py2 = static_cast<SynchronousEventAdapterPy*>(this)->get_override("loadEvent"))
 	{
+		AcquireGIL gil;		//Aquire the python GIL.
 		loadEvent_py2(); // calls python override (implemented by user-defined python derived class)
 		return;
 	}
@@ -40,6 +43,7 @@ void SynchronousEventAdapterPy::playEvent_py()
 	//STI library calls this if there is a python override
 	if (boost::python::override playEvent_py2 = static_cast<SynchronousEventAdapterPy*>(this)->get_override("playEvent"))
 	{
+		AcquireGIL gil;		//Aquire the python GIL.
 		playEvent_py2(); // calls python override (implemented by user-defined python derived class)
 		return;
 	}
@@ -56,6 +60,7 @@ void SynchronousEventAdapterPy::collectMeasurementData_py()
 	//STI library calls this if there is a python override
 	if (boost::python::override collectMeasurementData_py2 = static_cast<SynchronousEventAdapterPy*>(this)->get_override("collectMeasurementData"))
 	{
+		AcquireGIL gil;		//Aquire the python GIL.
 		collectMeasurementData_py2(); // calls python override (implemented by user-defined python derived class)
 		return;
 	}
