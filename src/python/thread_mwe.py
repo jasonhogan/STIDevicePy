@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python2.7
+#!/usr/bin/env python2.7
 import STIPy, threading, time
 
 # Choose what to thread. Similar/same behavior for all interesting cases.
@@ -24,7 +24,7 @@ class MyDevice(STIPy.STI_Device):
             dataOut.addValue(self.counter)
         else: # ...so, this must be a local read
             print("%s read from Python" % (self.counter,))
-        #self.counter += 1
+        self.counter += 1
         self.lock.release()
         return True
 
@@ -36,7 +36,6 @@ class MyDevice(STIPy.STI_Device):
 def localStuff(dev):
     while True:
         time.sleep(2); # Don't just hammer STI server...
-        dev.counter += 1
         dev.readChannel(0, [], [])
 
 
