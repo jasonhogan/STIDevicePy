@@ -47,7 +47,7 @@ public:
 	virtual std::string execute(int argc, char* argv[]);
 
 	// Device-specific event parsing
-	virtual void parseDeviceEvents(const RawEventMap& eventsIn, SynchronousEventVector& eventsOut);
+	virtual void parseDeviceEvents(const RawEventMap& eventsIn, SynchronousEventVector& eventsOut) throw (std::exception);
 	virtual void parseDeviceEvents_py(const boost::python::list& eventsIn, boost::python::list& eventsOut);
 
 	// Event Playback control

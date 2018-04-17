@@ -176,7 +176,7 @@ void STI_Device_Adapter_Pub::convertRawEventMap(const RawEventMap& eventsIn, boo
 	}
 }
 
-void STI_Device_Adapter_Pub::parseDeviceEvents(const RawEventMap& eventsIn, SynchronousEventVector& eventsOut)
+void STI_Device_Adapter_Pub::parseDeviceEvents(const RawEventMap& eventsIn, SynchronousEventVector& eventsOut) throw (std::exception)
 {
 	//also see:  https://stackoverflow.com/questions/6157409/stdvector-to-boostpythonlist
 	
